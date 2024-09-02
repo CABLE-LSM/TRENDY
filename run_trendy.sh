@@ -38,6 +38,7 @@ experiment_name="S3"
 run_model=1       # 1/0: Do/Do not run the model
 merge_results=1   # 1/0: Do/Do not merge results into one folder and backup restart,
                   # logs, landmasks, etc.
+clean_runs=0      # 1/0: Do/Do not run the model
 # mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2022"   # sub-steps to be merged
 mergesteps="1700_1900 1901_2022"  # sub-steps to be merged
 
@@ -49,7 +50,7 @@ extent="global"
 climate_restart="cru_climate_rst"  # name of climate restart file (without file extension)
 keep_dump=0                        # 1/0: keep or discard dump files.
                                    # They are always kept for LUC runs
-inodes=""  # empty or comma-delimited list of nodes to use
+inodes="node004"  # empty or comma-delimited list of nodes to use
 xnodes=""  # empty or comma-delimited list of nodes to exclude
 
 ### Directories and files ###
@@ -58,7 +59,7 @@ cablecode="${HOME}/prog/github/cable/cable.cable-pop_trendy"
 # Run directory (assumes that trend_v12 directory was copied to rundir)
 rundir="${PWD}"
 # Output directory- where the results are written to
-outpath="${HOME}/projects/cable/trendy_v12_met/${experiment_name}"
+outpath="${HOME}/projects/cable/trendy_v12_test/${experiment_name}"
 # Parameter directory
 paramdir="${cablecode}/params/v12"
 # LUT directory
@@ -71,7 +72,7 @@ merge_script="${rundir}/merge_outputs.sh"
 cleanup_script="${rundir}/cleanup.sh"
 
 # Cable executable- we should move this to bin
-exe="${cablecode}/offline/cable"
+exe="${cablecode}/bin/cable"
 
 # Append the location of the cablepop python module to the PYTHONPATH
 export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
@@ -191,32 +192,42 @@ fi
 if [[ ${run_model} -eq 1 ]] ; then
     echo "Submit model runs"
     # 2.1) Write general settings into run script
-    ${ised} -e "s|^\([ ]*\)#${ntag}.*|\1#${ntag}${experiment_name}|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)experiment=.*|\1experiment='${experiment}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)experiment_name=.*|\1experiment_name='${experiment_name}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)cablecode=.*|\1cablecode='${cablecode}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)rundir=.*|\1rundir='${rundir}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)datadir=.*|\1datadir='${datadir}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)exe=.*|\1exe='${exe}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)MetPath=.*|\1MetPath='${GlobalMetPath}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)MetVersion=.*|\1MetVersion='${MetVersion}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)TransitionFilePath=.*|\1TransitionFilePath='${GlobalTransitionFilePath}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)SurfaceFile=.*|\1SurfaceFile='${SurfaceFile}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)filename_veg=.*|\1filename_veg='${filename_veg}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)filename_soil=.*|\1filename_soil='${filename_soil}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)casafile_cnpbiome=.*|\1casafile_cnpbiome='${casafile_cnpbiome}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)gm_lut_bernacchi_2002=.*|\1gm_lut_bernacchi_2002='${gm_lut_bernacchi_2002}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)gm_lut_walker_2013=.*|\1gm_lut_walker_2013='${gm_lut_walker_2013}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)filename_d13c_atm=.*|\1filename_d13c_atm='${gm_lut_bernacchi_2002}'|" ${run_script}
-    ${ised} -e "s|^\([ ]*\)ised=.*|\1ised='${ised}'|" ${run_script}
+    ${ised} \
+	-e "s|^\([ ]*\)isite=.*|\1isite=0|" \
+	-e "s|^\([ ]*\)outaverage7=.*|\1outaverage7='monthly'|" \
+	-e "s|^\([ ]*\)#${ntag}.*|\1#${ntag}${experiment_name}|" \
+        -e "s|^\([ ]*\)experiment=.*|\1experiment='${experiment}'|" \
+        -e "s|^\([ ]*\)experiment_name=.*|\1experiment_name='${experiment_name}'|" \
+        -e "s|^\([ ]*\)cablecode=.*|\1cablecode='${cablecode}'|" \
+        -e "s|^\([ ]*\)rundir=.*|\1rundir='${rundir}'|" \
+        -e "s|^\([ ]*\)datadir=.*|\1datadir='${datadir}'|" \
+        -e "s|^\([ ]*\)exe=.*|\1exe='${exe}'|" \
+        -e "s|^\([ ]*\)MetPath=.*|\1MetPath='${GlobalMetPath}'|" \
+        -e "s|^\([ ]*\)MetVersion=.*|\1MetVersion='${MetVersion}'|" \
+        -e "s|^\([ ]*\)TransitionFilePath=.*|\1TransitionFilePath='${GlobalTransitionFilePath}'|" \
+        -e "s|^\([ ]*\)SurfaceFile=.*|\1SurfaceFile='${SurfaceFile}'|" \
+        -e "s|^\([ ]*\)filename_veg=.*|\1filename_veg='${filename_veg}'|" \
+        -e "s|^\([ ]*\)filename_soil=.*|\1filename_soil='${filename_soil}'|" \
+        -e "s|^\([ ]*\)casafile_cnpbiome=.*|\1casafile_cnpbiome='${casafile_cnpbiome}'|" \
+        -e "s|^\([ ]*\)gm_lut_bernacchi_2002=.*|\1gm_lut_bernacchi_2002='${gm_lut_bernacchi_2002}'|" \
+        -e "s|^\([ ]*\)gm_lut_walker_2013=.*|\1gm_lut_walker_2013='${gm_lut_walker_2013}'|" \
+        -e "s|^\([ ]*\)filename_d13c_atm=.*|\1filename_d13c_atm='${gm_lut_bernacchi_2002}'|" \
+        -e "s|^\([ ]*\)ised=.*|\1ised='${ised}'|" \
+	${run_script}
 
     # 2.2) Loop over landmasks and start runs
     for ((irun=1; irun<=${nruns}; irun++)) ; do
         runpath="${outpath}/run${irun}"
-        ${ised} -e "s|^\([ ]*\)runpath=.*|\1runpath='${runpath}'|" ${run_script}
-        ${ised} -e "s|^\([ ]*\)LandMaskFile=.*|\1LandMaskFile='${runpath}/landmask/landmask${irun}.nc'|" ${run_script}
+        ${ised} \
+	    -e "s|^\([ ]*\)runpath=.*|\1runpath='${runpath}'|" \
+            -e "s|^\([ ]*\)LandMaskFile=.*|\1LandMaskFile='${runpath}/landmask/landmask${irun}.nc'|" \
+	    ${run_script}
 	if [[ -n ${inodes} ]] ; then
-	    inode=$(echo ${inodes} | tr ',' '\n' | grep -v ${inode})
+	    if [[ -n $(echo ${inodes} | grep ',') ]] ; then
+		inode=$(echo ${inodes} | tr ',' '\n' | grep -v ${inode})
+	    else
+		inode=${inodes}
+	    fi
 	    iopt=$(isub ${inode})
 	fi
         RUN_IDS="${RUN_IDS}:$(${pqsub} ${iopt} ${xopt} ${run_script})"
@@ -255,20 +266,28 @@ if [[ ${merge_results} -eq 1 ]] ; then
     if [[ -f ${merge_script}.old ]] ; then rm ${merge_script}.old ; fi
 
     echo "Submitted merge jobs ${MERGE_IDS}"
+fi
 
-    # -----------------------------------------------------
-    # 4) Backup and cleanup
-    # -----------------------------------------------------
-
+# -----------------------------------------------------------------------
+# 4) Backup and cleanup
+# -----------------------------------------------------------------------
+if [[ ${clean_runs} -eq 1 ]] ; then
     echo "Submit cleaning job"
-    ${ised} -e "s|^\([ ]*\)exp_name=.*|\1exp_name='${experiment_name}'|" ${cleanup_script}
-    ${ised} -e "s|^\([ ]*\)outpath=.*|\1outpath='${outpath}'|" ${cleanup_script}
-    ${ised} -e "s|^\([ ]*\)nruns=.*|\1nruns=${nruns}|" ${cleanup_script}
-    ${ised} -e "s|^\([ ]*\)climate_restart=.*|\1climate_restart='${climate_restart}'|" ${cleanup_script}
-    ${ised} -e "s|^\([ ]*\)keep_dump=.*|\1keep_dump=${keep_dump}|" ${cleanup_script}
-    ${ised} -e "s|^\([ ]*\)mergesteps=.*|\1mergesteps='${mergesteps}'|" ${cleanup_script}
 
-    CLEAN_ID=$(eval $(dqsub ${MERGE_IDS}) ${cleanup_script})
+    ${ised} \
+	-e "s|^\([ ]*\)exp_name=.*|\1exp_name='${experiment_name}'|" \
+        -e "s|^\([ ]*\)outpath=.*|\1outpath='${outpath}'|" \
+        -e "s|^\([ ]*\)nruns=.*|\1nruns=${nruns}|" \
+        -e "s|^\([ ]*\)climate_restart=.*|\1climate_restart='${climate_restart}'|" \
+        -e "s|^\([ ]*\)keep_dump=.*|\1keep_dump=${keep_dump}|" \
+        -e "s|^\([ ]*\)mergesteps=.*|\1mergesteps='${mergesteps}'|" \
+	${cleanup_script}
+
+    if [[ ${merge_results} -eq 1 ]] ; then
+	CLEAN_ID=$(eval $(dqsub ${MERGE_IDS}) ${cleanup_script})
+    else
+	CLEAN_ID=$(${pqsub} ${cleanup_script})
+    fi
 
     if [[ -f ${cleanup_script}.old ]] ; then rm ${cleanup_script}.old ; fi
 

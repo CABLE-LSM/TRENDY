@@ -32,10 +32,10 @@ fi
 #
 # COCO2 base directory
 coco2dir="${HOME}/projects/coco2/cable-pop"
-sitelist="${coco2dir}/misc/coco2_sites.txt"
-# sitelist="${coco2dir}/misc/coco2_test_sites1.txt"
+# sitelist="${coco2dir}/misc/coco2_sites.txt"
+sitelist="${coco2dir}/misc/coco2_test_sites1.txt"
 run_model=1       # 1/0: Do/Do not run Cable-POP
-clean_runpath=0   # 1/0: Do/Do not remove all files from runpath
+clean_runpath=1   # 1/0: Do/Do not remove all files from runpath
 plot_results=0    # 1/0: Do/Do not plot results
 inodes=""  # empty or comma-delimited list of nodes to use
 xnodes=""  # empty or comma-delimited list of nodes to exclude
@@ -64,6 +64,12 @@ CO2NdepFile="${MetPath}/AmaFACE_co2npdepforcing_1850_2100_AMB_JK.csv"
 filename_veg="${paramdir}/def_veg_params.txt"
 filename_soil="${paramdir}/def_soil_params.txt"
 casafile_cnpbiome="${paramdir}/pftlookup.csv"
+# run switches
+explicit_gm=0         # 1/0: explicit (finite) or implicit mesophyll conductance
+coordinate_photosyn=0 # 1/0: Do/Do not coordinate photosynthesis
+coord=F               # T/F: version of photosyn. optimisation (optimised(F) or forced (T))
+acclimate_photosyn=0  # 1/0: Do/Do not acclimate photosynthesis
+laifeedback=0         # 1/0: Do/Do not calculate LAI prognostically
 
 # plot script to submit
 plot_script="plot_cable_site.sh"
@@ -178,14 +184,19 @@ if [[ ${run_model} -eq 1 ]] ; then
 	    -e "s|^\([ ]*\)filename_veg=.*|\1filename_veg='${filename_veg}'|" \
 	    -e "s|^\([ ]*\)filename_soil=.*|\1filename_soil='${filename_soil}'|" \
 	    -e "s|^\([ ]*\)casafile_cnpbiome=.*|\1casafile_cnpbiome='${casafile_cnpbiome}'|" \
+	    -e "s|^\([ ]*\)explicit_gm=.*|\1explicit_gm=${explicit_gm}|" \
+	    -e "s|^\([ ]*\)coordinate_photosyn=.*|\1coordinate_photosyn=${coordinate_photosyn}|" \
+	    -e "s|^\([ ]*\)coord=.*|\1coord='${coord}'|" \
+	    -e "s|^\([ ]*\)acclimate_photosyn=.*|\1acclimate_photosyn=${acclimate_photosyn}|" \
+	    -e "s|^\([ ]*\)laifeedback=.*|\1laifeedback=${laifeedback}|" \
 	    ${run_script}
 
     RUN_IDS=
     for site in ${sites} ; do
 	echo "    ${site}"
         experiment_name=${site}
-        runpath="${coco2dir}/output_no_iveg/${experiment_name}"
-        MetFile="${MetPath}/${experiment_name}_meteo.no_iveg.nc"
+        runpath="${coco2dir}/output/${experiment_name}"
+        MetFile="${MetPath}/${experiment_name}_meteo.nc"
 
         # Write site specific settings into run script
         ${ised} -e "s|^#${ntag}.*|#${ntag}${experiment_name}|" \

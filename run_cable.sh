@@ -186,6 +186,7 @@ call_blaze=0        # 1/0: do/do not call BLAZE
 explicit_gm=0       # 1/0: explicit (finite) or implicit mesophyll conductance
 Rubisco_params="Bernacchi_2002"   # "Bernacchi_2002" or "Walker_2013"
 coordinate_photosyn=1 # 1/0: Do/Do not coordinate photosynthesis
+# coord not working: hard-coded in core/biogeochem/cable_optimiseJVratio.F90
 coord=F               # T/F: version of photosyn. optimisation (optimised(F) or forced (T))
 acclimate_photosyn=1  # 1/0: Do/Do not acclimate photosynthesis
 call_pop=1          # 1/0: Do/Do not use POP population dynamics model, coupled to CASA
@@ -206,8 +207,10 @@ gm_lut_walker_2013="${cablecode}/params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc"
 filename_d13c_atm="${cablecode}/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc"
 
 if [[ ${isite} -eq 1 ]] ; then  # site data
-    # no LUC in site level runs
+    # no LUC, no POP, no BLAZE in site level runs
     doiniluc=0
+    call_pop=0
+    call_blaze=0
     # input years
     start_year=$(grep "${experiment_name}" ${sitelist} | cut -f 2)
     end_year=$(grep "${experiment_name}" ${sitelist} | cut -f 3)

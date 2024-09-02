@@ -30,6 +30,8 @@
 #PBS -j oe
 #PBS -S /bin/bash
 
+set -e
+
 # Plot site-level Cable-POP output
 
 if [[ -e ${HOME}/miniconda3/bin/conda ]] ; then  # biocomp

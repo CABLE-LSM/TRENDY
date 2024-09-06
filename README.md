@@ -3,7 +3,7 @@
 
 # TRENDY v12 Experiment Configuration
 
-This repository contains the auxiliary scripts required to run the TRENDY configuration on the RP23 NCI project on Gadi.
+This repository contains the auxiliary scripts required to run the TRENDY v12 configuration on the RP23 NCI project on Gadi. The latest version of the [POP-TRENDY branch](https://github.com/CABLE-LSM/CABLE/tree/CABLE-POP_TRENDY) contains changes to the LUC scheme which makes these scripts incompatible with the head of said branch. The most recent version commit of the POP-TRENDY branch that works with this script is [0521e80].
 
 ## Usage
 
@@ -12,7 +12,7 @@ Copy these scripts to do the desired run directory on Gadi. Access to the HH5 pr
 * Specify the location of the ```cable``` repository, by setting the ```cablecode``` variable on line 46.
 * Set the experiment to run by setting the ```experiment``` variable on line 26. The experiment names correspond to a set of internal configuration options.
 
-The changes in this branch as compared to the trunk reflect a series of changes to the Met input routines which are currently contained in CABLE PR [290](https://github.com/CABLE-LSM/CABLE/pull/290). The changes are a first pass at making the input routines generalised. The namelist options ```Run``` and ```MetVersion``` that set a series of options inside the code have been removed, and replaced with options in ```cru.nml``` which permit the same behaviour.
+ as compared to the trunk reflect a series of changes to the Met input routines which are currently contained in CABLE PR [290](https://github.com/CABLE-LSM/CABLE/pull/290). The changes are a first pass at making the input routines generalised. The namelist options ```Run``` and ```MetVersion``` that set a series of options inside the code have been removed, and replaced with options in ```cru.nml``` which permit the same behaviour.
 
 A the new namelist options in the ```cru.nml``` are:
 * \<variable\>File: ```CHARACTER(256)```, template matching the set of files for a given met variable. Includes ```NDep```. Defaults to ```"None"```. See [Met File Template](#met-file-template) for details.

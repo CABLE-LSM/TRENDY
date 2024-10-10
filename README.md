@@ -1,7 +1,7 @@
 [//]: # (Author: Lachlan Whyborn)
 [//]: # (Date Modified: )
 
-# TRENDY v13 Experiment Configuration
+# TRENDY v12 Experiment Configuration
 
 This repository contains the auxiliary scripts required to run the TRENDY configuration on the RP23 NCI project on Gadi.
 

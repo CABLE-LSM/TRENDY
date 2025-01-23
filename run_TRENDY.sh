@@ -17,16 +17,18 @@
 # Modules
 #-------------------------------------------------------
 module purge
+module use /g/data/hh5/public/modules
 module load intel-compiler/2021.8.0
-module load conda_concept/analysis3
+module load conda_concept
+module load netcdf
 
 #-------------------------------------------------------
 # Settings
 #-------------------------------------------------------
-experiment=""
+experiment="S3"
 experiment_name="${experiment}"
 run_model=1       # run the model or just do other steps (e.g. merging)?
-merge_results=0   # after runs are finished, merge results into one folder and backup 
+merge_results=1   # after runs are finished, merge results into one folder and backup 
                   # restart, logs, landmasks etc. (1) or keep folder structure as it is (0).
                   # The latter is useful if runs are to be resumed from restart files. 
 #mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2022"   # sub-steps to be merged
@@ -34,16 +36,16 @@ mergesteps="1700_1900 1901_2022"
 
 ### Spatial subruns ###
 create_landmasks=1               # create new landmask files (1) or use existing ones (0)?
-nruns=100                        # number of runs in parallel
+nruns=4                        # number of runs in parallel
 #extent="64.0,66.0,60.0,62.0"    # "global" or "lon_min,lon_max,lat_min,lat_max"
 extent="global"
-climate_restart="cru_climate_rst"       # name of climate restart file (without file extension)
+climate_restart="bios_climate_rst"       # name of climate restart file (without file extension)
 keep_dump=1                             # keep dump files (1) or discard (0)? They are always kept for LUC runs
 
 
 ### Directories and files###
 # Code directory- set this to where your version of the code is located
-cablecode=""
+cablecode="${HOME}/CABLE-POP-HEAD/"
 # Run directory
 rundir="${PWD}"
 # Output directory- where the results are written to
@@ -60,7 +62,7 @@ merge_script="${rundir}/merge_outputs.sh"
 cleanup_script="${rundir}/cleanup.sh"
 
 # Cable executable- we should move this to bin
-exe="${cablecode}/offline/cable"
+exe="${cablecode}/bin/cable"
 
 # Append the location of the cablepop python module to the PYTHONPATH
 export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
@@ -69,13 +71,13 @@ export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
 # and all the data now lives in rp23/no_provenance
 datadir="/g/data/rp23/data/no_provenance/"
 # Global Meteorology
-GlobalMetPath="/g/data/rp23/experiments/2024-03-12_CABLE4-dev/lw5085/data_links/"
+GlobalMetPath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks"
 # Global LUC
-GlobalTransitionFilePath="${datadir}/luc/LUH2_GCB_1x1/v2023"
+GlobalTransitionFilePath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/LUC-in-TRENDY/LUH2_inputs/"
 # Global Surface file 
 SurfaceFile="${datadir}/gridinfo/gridinfo_CSIRO_1x1.nc"
 # Global Land Mask
-GlobalLandMaskFile="${datadir}/landmask/glob_ipsl_1x1.nc"
+GlobalLandMaskFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/act9_lm.nc"
 # vegetation parameters
 filename_veg="${paramdir}/def_veg_params.txt"
 # soil parameters
@@ -139,6 +141,7 @@ if [[ ${run_model} -eq 1 ]] ; then
 
     # 2.2) Loop over landmasks and start runs
     for ((irun=1; irun<=${nruns}; irun++)) ; do
+        echo "Executing job ${irun}"
         runpath="${outpath}/run${irun}"
         ${ised} -e "s|^runpath=.*|runpath='${runpath}'|" ${run_script}
         ${ised} -e "s|^LandMaskFile=.*|LandMaskFile='${runpath}/landmask/landmask${irun}.nc'|" ${run_script}
@@ -165,7 +168,7 @@ if [[ ${merge_results} -eq 1 ]] ; then
     for mergestep in ${mergesteps} ; do
         for ftype in ${ftypes} ; do
             if [[ ("${ftype}" != "LUC") || ("${experiment}" == "S3" && ("${mergestep}" == "1700_1900" || "${mergestep}" == "1901_"* )) ]] ; then
-                ${ised} -e "s|^python3.*|python3 ${rundir}/merge_to_output2d.py -v -z -o ${outfinal}/cru_out_${ftype}_${mergestep}.nc ${outpath}/run*/outputs/cru_out_${ftype}_${mergestep}.nc|" ${merge_script}
+                ${ised} -e "s|^python3.*|python3 ${rundir}/merge_to_output2d.py -v -z -o ${outfinal}/bios_out_${ftype}_${mergestep}.nc ${outpath}/run*/outputs/bios_out_${ftype}_${mergestep}.nc|" ${merge_script}
                 if [[ ${run_model} -eq 1 ]] ; then
                     MERGE_IDS="${MERGE_IDS}:$($(dqsub ${RUN_IDS}) ${merge_script})"
                 else

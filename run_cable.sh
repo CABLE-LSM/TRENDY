@@ -2,7 +2,7 @@
 
 # Gadi
 # https://opus.nci.org.au/display/Help/How+to+submit+a+job
-#PBS -N S3
+#PBS -N S0
 #PBS -P rp23
 #PBS -q normal
 #PBS -p 600
@@ -67,9 +67,9 @@ if [[ ! -z ${mpiexecdir} ]] ; then export mpiexecdir="${mpiexecdir}/" ; fi
 ## Basic settings (parsed through from wrapper script)
 ## ------------------------------------------------------------------
 # TRENDY experiment (S0, S1, S2, S3, S4, S5, S6):     
-experiment='S3'
+experiment='S0'
 # Name of the experiment (= name of output folder)     
-experiment_name='S3'
+experiment_name='S0'
 # Code directory
 cablecode='/home/564/lw5085/CABLE-POP-HEAD/'
 # Script directory
@@ -87,9 +87,9 @@ TransitionFilePath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/LUC-i
 # Global Surface file 
 SurfaceFile='/g/data/rp23/data/no_provenance//gridinfo/gridinfo_CSIRO_1x1.nc'
 # Output directory of the run
-runpath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S3/run4'
+runpath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S0/run4'
 # Land Mask used for this run
-LandMaskFile='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S3/run4/landmask/landmask4.nc'
+LandMaskFile='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S0/run4/landmask/landmask4.nc'
 
 
 ## ----------------------------------------------------------------
@@ -279,13 +279,13 @@ else
 fi
 
 cat > ${tmp}/sedtmp.${pid} << EOF
-    rainFile     = "${MetPath}/rain_AGCD_<startdate>_<enddate>.nc"
-    swdnFile     = "${MetPath}/swrad_AGCD_<startdate>_<enddate>.nc"
-    TmaxFile     = "${MetPath}/tmax_AGCD_<startdate>_<enddate>.nc"
-    TminFile     = "${MetPath}/tmin_AGCD_<startdate>_<enddate>.nc"
-    vph0900File  = "${MetPath}/vph09_AGCD_<startdate>_<enddate>.nc"
-    vph1500File  = "${MetPath}/vph15_AGCD_<startdate>_<enddate>.nc"
-    windFile     = "${MetPath}/wind_AGCD_<startdate>_<enddate>.nc"
+    rainFile     = "${MetPath}/flipped_data/rain_AGCD_flipped_<startdate>_<enddate>.nc"
+    swdnFile     = "${MetPath}/flipped_data/rad_AGCD_flipped_<startdate>_<enddate>.nc"
+    TmaxFile     = "${MetPath}/flipped_data/tmax_AGCD_flipped_<startdate>_<enddate>.nc"
+    TminFile     = "${MetPath}/flipped_data/tmin_AGCD_flipped_<startdate>_<enddate>.nc"
+    vph0900File  = "${MetPath}/flipped_data/vph09_AGCD_flipped_<startdate>_<enddate>.nc"
+    vph1500File  = "${MetPath}/flipped_data/vph15_AGCD_flipped_<startdate>_<enddate>.nc"
+    windFile     = "${MetPath}/flipped_data/windspeed_AGCD_flipped_<startdate>_<enddate>.nc"
     CO2File      = "${MetPath}/co2_17000101_20221231.txt"
     LandMaskFile = "${LandMaskFile}"
     rainRecycle = T

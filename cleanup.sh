@@ -3,7 +3,7 @@
 # Gadi
 # https://opus.nci.org.au/display/Help/How+to+submit+a+job
 #PBS -N CABLE_cleanup
-#PBS -P pr09
+#PBS -P rp23
 #PBS -q normal
 #PBS -l walltime=00:30:00
 #PBS -l mem=1GB
@@ -15,10 +15,10 @@
 #PBS -j oe
 #PBS -S /bin/bash
 
-exp_name='TRENDY_S0'
-outpath='/g/data/pr09/TRENDY_v12/S0'
-nruns=100
-climate_restart='cru_climate_rst'
+exp_name='S0'
+outpath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S0'
+nruns=4
+climate_restart='bios_climate_rst'
 keep_dump=1
 mergesteps='1700_1900 1901_2022'
 

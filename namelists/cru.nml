@@ -1,12 +1,12 @@
 &crunml
-    rainFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/rain_AGCD_<startdate>_<enddate>.nc"
-    swdnFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/rad_AGCD_<startdate>_<enddate>.nc"
-    TmaxFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/tmax_<startdate>_<enddate>.nc"
-    TminFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/tmin_<startdate>_<enddate>.nc"
-    vph0900File = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/vph09_AGCD_<startdate>_<enddate>.nc"
-    vph1500File = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/vph15_AGCD_<startdate>_<enddate>.nc"
-    windFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/wind_AGCD_<startdate>_<enddate>.nc"
-    LandMaskFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/BIOS3_forcing/acttest9/acttest9.nc"
+    rainFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/rain_AGCD_flipped_<startdate>_<enddate>.nc"
+    swdnFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/rad_AGCD_flipped_<startdate>_<enddate>.nc"
+    TmaxFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/tmax_flipped_<startdate>_<enddate>.nc"
+    TminFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/tmin_flipped_<startdate>_<enddate>.nc"
+    vph0900File = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/vph09_AGCD_flipped_<startdate>_<enddate>.nc"
+    vph1500File = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/vph15_AGCD_flipped_<startdate>_<enddate>.nc"
+    windFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/flipped_data/wind_AGCD_flipped_<startdate>_<enddate>.nc"
+    LandMaskFile = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing/symlinks/Australia_BIOS_0pt05x0pt05_landmask.nc"
     CO2File = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/co2_17000101_20221231.txt"
     rainRecycle = T
     swdnRecycle = T

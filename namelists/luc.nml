@@ -4,5 +4,5 @@
 	DirectRead         = .FALSE.
         YearStart          = 1700
         YearEnd            = 2020
-        PrimOnlyFile       = "prim_only.nc"
+        PrimOnlyFile       = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/LUC-in-TRENDY/LUH2_inputs/prim_only.nc"
 /

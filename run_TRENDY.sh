@@ -28,7 +28,7 @@ module load netcdf
 experiment="S0"
 experiment_name="${experiment}"
 run_model=1       # run the model or just do other steps (e.g. merging)?
-merge_results=1   # after runs are finished, merge results into one folder and backup 
+merge_results=0   # after runs are finished, merge results into one folder and backup 
                   # restart, logs, landmasks etc. (1) or keep folder structure as it is (0).
                   # The latter is useful if runs are to be resumed from restart files. 
 #mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2022"   # sub-steps to be merged
@@ -77,7 +77,7 @@ GlobalTransitionFilePath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761
 # Global Surface file 
 SurfaceFile="${datadir}/gridinfo/gridinfo_CSIRO_1x1.nc"
 # Global Land Mask
-GlobalLandMaskFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/acttest9.nc"
+GlobalLandMaskFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/act9_lm.nc"
 # vegetation parameters
 filename_veg="${paramdir}/def_veg_params.txt"
 # soil parameters

@@ -18,12 +18,13 @@
 #-------------------------------------------------------
 module purge
 module load intel-compiler/2021.8.0
+module use /g/data/hh5/public/modules
 module load conda_concept/analysis3
 
 #-------------------------------------------------------
 # Settings
 #-------------------------------------------------------
-experiment=""
+experiment="S0"
 experiment_name="${experiment}"
 run_model=1       # run the model or just do other steps (e.g. merging)?
 merge_results=0   # after runs are finished, merge results into one folder and backup 
@@ -60,7 +61,7 @@ merge_script="${rundir}/merge_outputs.sh"
 cleanup_script="${rundir}/cleanup.sh"
 
 # Cable executable- we should move this to bin
-exe="${cablecode}/offline/cable"
+exe="${cablecode}/bin/cable"
 
 # Append the location of the cablepop python module to the PYTHONPATH
 export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
@@ -69,9 +70,9 @@ export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
 # and all the data now lives in rp23/no_provenance
 datadir="/g/data/rp23/data/no_provenance/"
 # Global Meteorology
-GlobalMetPath="/g/data/rp23/experiments/2024-03-12_CABLE4-dev/lw5085/data_links/"
+GlobalMetPath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/"
 # Global LUC
-GlobalTransitionFilePath="${datadir}/luc/LUH2_GCB_1x1/v2023"
+GlobalTransitionFilePath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/luc/"
 # Global Surface file 
 SurfaceFile="${datadir}/gridinfo/gridinfo_CSIRO_1x1.nc"
 # Global Land Mask

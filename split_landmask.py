@@ -114,7 +114,6 @@ def create_run_mask(
     # number of land points per processor
     ntot = landmask_in.sum().astype(np.int32).item()
     npermask = np.ceil(ntot / nmasks).astype(np.int32).item()
-
     # Create the repetitive pattern to select the land points
     # for each processor
     run_mask = np.arange(nmasks)
@@ -122,7 +121,7 @@ def create_run_mask(
 
     # New land mask
     mask_land_flat = landmask_in.values.flat
-    landmask_in.values.flat[~np.isnan(mask_land_flat)] += run_mask
+    landmask_in.values.flat[(mask_land_flat != 0)] += run_mask
 
     return landmask_in
 

@@ -25,18 +25,18 @@ module load netcdf
 #-------------------------------------------------------
 # Settings
 #-------------------------------------------------------
-experiment="S0"
+experiment="S3"
 experiment_name="${experiment}"
 run_model=1       # run the model or just do other steps (e.g. merging)?
 merge_results=0   # after runs are finished, merge results into one folder and backup 
                   # restart, logs, landmasks etc. (1) or keep folder structure as it is (0).
                   # The latter is useful if runs are to be resumed from restart files. 
 #mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2022"   # sub-steps to be merged
-mergesteps="1700_1900 1901_2022"
+mergesteps="1900_2022"
 
 ### Spatial subruns ###
 create_landmasks=1              # create new landmask files (1) or use existing ones (0)?
-nruns=4                        # number of runs in parallel
+nruns=1                      # number of runs in parallel
 #extent="64.0,66.0,60.0,62.0"    # "global" or "lon_min,lon_max,lat_min,lat_max"
 extent="global"
 climate_restart="bios_climate_rst"       # name of climate restart file (without file extension)
@@ -45,15 +45,15 @@ keep_dump=1                             # keep dump files (1) or discard (0)? Th
 
 ### Directories and files###
 # Code directory- set this to where your version of the code is located
-cablecode="${HOME}/CABLE-POP-HEAD/"
+cablecode="${HOME}/CABLE-POP-BIOS/"
 # Run directory
 rundir="${PWD}"
 # Output directory- where the results are written to
 outpath="${rundir}/${experiment_name}"
 # Parameter directory
-paramdir="${cablecode}/params/v12"
+paramdir="${rundir}/params_bios/"
 # LUT directory
-lutdir="${cablecode}/params"
+lutdir="${rundir}/params_bios/"
 
 # The various scripts used are contained in the configuration repository
 landmask_script="${rundir}/split_landmask.py"
@@ -71,13 +71,13 @@ export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
 # and all the data now lives in rp23/no_provenance
 datadir="/g/data/rp23/data/no_provenance/"
 # Global Meteorology
-GlobalMetPath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks"
+GlobalMetPath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/MetForcing"
 # Global LUC
-GlobalTransitionFilePath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/LUC-in-TRENDY/LUH2_inputs/"
+GlobalTransitionFilePath="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/LUH2/LUH2_inputs/"
 # Global Surface file 
-SurfaceFile="${datadir}/gridinfo/gridinfo_CSIRO_1x1.nc"
+SurfaceFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/data_005/gridinfo_CSIRO_CRU005x005_4tiles_v2.nc"
 # Global Land Mask
-GlobalLandMaskFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks/act9_lm.nc"
+GlobalLandMaskFile="/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/landmasks/Australia_BIOS_9pts_at_0p05_resolution_landmask.nc"
 # vegetation parameters
 filename_veg="${paramdir}/def_veg_params.txt"
 # soil parameters

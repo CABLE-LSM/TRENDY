@@ -1,7 +1,7 @@
 &biosnml
     ! Bios Namelist File
     ! Pathnames for meteorology and spatially varying parameters. File format is dated binfile.
-    met_path   = "met/"
+    met_path   = "/g/data/rp23/experiments/2024-04-17_BIOS3-merge/BIOS3_forcing/acttest9/met/"
     param_path = ""
     ! Operational landmask. Format is gridded flt file.
     landmaskflt_file = "acttest9.flt"

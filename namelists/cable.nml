@@ -19,6 +19,7 @@
     cable_user%LUC_outfile     = "outputs/cru_out_LUC.nc"
     cable_user%climate_restart_in  = "restart/cru_climate_rst.nc"
     cable_user%climate_restart_out = "restart/cru_climate_rst.nc"
+    cable_user%soil_struc = "sli"
     vegparmnew  = .TRUE.   ! using new format when true
     soilparmnew = .TRUE.   ! using new format when true
     spinup      = .FALSE.  ! do we spin up the model?
@@ -87,7 +88,7 @@
     cable_user%CASA_DUMP_WRITE     = .FALSE.   ! TRUE outputs CASA forcing in netcdf format
     cable_user%CASA_SPIN_STARTYEAR = 1850      ! default = 1950
     cable_user%CASA_SPIN_ENDYEAR   = 1859      ! default = 1960
-    cable_user%CASA_NREP           = 0
+    cable_user%CASA_NREP           = 1
     cable_user%LogWorker           = .FALSE.
     cable_user%SSNOW_POTEV         = "P-M"     ! Humidity Deficit Method
     cable_user%SOIL_STRUC          = "default"
@@ -106,16 +107,20 @@
     cable_user%POPLUC              = .FALSE.
     cable_user%POPLUC_RunType      = "static"
     cable_user%vcmax               = "Walker2014"
-    cable_user%gs_switch           = "medlyn"
+    cable_user%gs_switch           = "leuning"
     cable_user%explicit_gm         = .FALSE.
     cable_user%Rubisco_parameters  = "Bernacchi_2002"
     cable_user%gm_LUT_file         = "/home/599/jk8585/CABLE_run/TRENDY_v10/params_v2/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc"
     cable_user%coordinate_photosyn = .TRUE.
-    cable_user%g0_switch           = "maximum"
+    cable_user%g0_switch           = "default"
     cable_user%acclimate_photosyn  = .TRUE.
+    cable_user%acclimate_autoresp_seasonal = .TRUE.
     cable_user%limit_labile        = .FALSE.
     cable_user%SRF                 = .TRUE.
     cable_user%SMRF_NAME           = "Trudinger2016"
-    cable_user%STRF_NAME           = "LT1994"
+    cable_user%STRF_NAME           = "Q10"
     cable_user%CALL_BLAZE          = .FALSE.
+    cable_user%amphistomatous      = .TRUE.
+    cable_user%calc_fdiff          = .TRUE.
+    cable_user%within_canopy_isothermal = .TRUE.
 /

@@ -2,7 +2,7 @@
 
 # Gadi
 # https://opus.nci.org.au/display/Help/How+to+submit+a+job
-#PBS -N S0
+#PBS -N S3
 #PBS -P rp23
 #PBS -q normal
 #PBS -p 600
@@ -58,6 +58,7 @@ module purge
 module load intel-compiler/2021.5.0
 module load intel-mpi/2021.5.1
 module load netcdf/4.8.0
+module load linaro-forge/24.0.2
 export mpiexecdir=/apps/intel-mpi/2021.5.1/bin
 if [[ ! -z ${mpiexecdir} ]] ; then export mpiexecdir="${mpiexecdir}/" ; fi
 
@@ -67,29 +68,29 @@ if [[ ! -z ${mpiexecdir} ]] ; then export mpiexecdir="${mpiexecdir}/" ; fi
 ## Basic settings (parsed through from wrapper script)
 ## ------------------------------------------------------------------
 # TRENDY experiment (S0, S1, S2, S3, S4, S5, S6):     
-experiment='S0'
+experiment='S3'
 # Name of the experiment (= name of output folder)     
-experiment_name='S0'
+experiment_name='S3'
 # Code directory
-cablecode='/home/564/lw5085/CABLE-POP-HEAD/'
+cablecode='/home/564/lw5085/CABLE-POP-BIOS/'
 # Script directory
 rundir='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY'
 # Data directory
 datadir='/g/data/rp23/data/no_provenance/'
 # Cable executable
-exe='/home/564/lw5085/CABLE-POP-HEAD//bin/cable'
+exe='/home/564/lw5085/CABLE-POP-BIOS//bin/cable'
 # Global Meteorology
-MetPath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/met_forcing_symlinks'
+MetPath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/MetForcing'
 # MetVersion
 MetVersion=''
 # Global LUC
-TransitionFilePath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/LUC-in-TRENDY/LUH2_inputs/'
+TransitionFilePath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/LUH2/LUH2_inputs/'
 # Global Surface file 
-SurfaceFile='/g/data/rp23/data/no_provenance//gridinfo/gridinfo_CSIRO_1x1.nc'
+SurfaceFile='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/ag9761/data_005/gridinfo_CSIRO_CRU005x005_4tiles_v2.nc'
 # Output directory of the run
-runpath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S0/run4'
+runpath='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S3/run1'
 # Land Mask used for this run
-LandMaskFile='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S0/run4/landmask/landmask4.nc'
+LandMaskFile='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/S3/run1/landmask/landmask1.nc'
 
 
 ## ----------------------------------------------------------------
@@ -118,7 +119,7 @@ purge_restart=0  # Delete all restart files?
 # MetType
 mettype="bios"       # "cru", "plume", "bios"
 # Cable 
-read_fdiff=1        # 1/0: do/do not read in diffuse radiation fraction
+read_fdiff=0        # 1/0: do/do not read in diffuse radiation fraction
 call_blaze=0        # 1/0: do/do not call BLAZE
 explicit_gm=0       # 1/0: explicit (finite) or implicit mesophyll conductance
 Rubisco_params="Bernacchi_2002"   # "Bernacchi_2002" or "Walker_2013"
@@ -130,19 +131,19 @@ doc13o2=0           # 1/0: Do/Do not calculate 13C
 c13o2_simple_disc=0 # 1/0: simple or full 13C leaf discrimination
 # Parameter files
 namelistpath="${rundir}/namelists"
-filename_veg='/home/564/lw5085/CABLE-POP-HEAD//params/v12/def_veg_params.txt'
-filename_soil='/home/564/lw5085/CABLE-POP-HEAD//params/v12/def_soil_params.txt'
-casafile_cnpbiome='/home/564/lw5085/CABLE-POP-HEAD//params/v12/pftlookup.csv'
+filename_veg='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//def_veg_params.txt'
+filename_soil='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//def_soil_params.txt'
+casafile_cnpbiome='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//pftlookup.csv'
 # Climate restart file 
 # changes for TRENDY >= v11: ClimateFile always created!
 # ClimateFile="/g/data/x45/ipbes/cable_climate/ipsl_climate_rst_glob_1deg.nc"
 #ClimateFile="$(dirname ${runpath})/climate_restart/cru_climate_rst.nc"
 ClimateFile="${runpath}/bios_climate_rst.nc"
 # gm lookup tables
-gm_lut_bernacchi_2002='/home/564/lw5085/CABLE-POP-HEAD//params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
-gm_lut_walker_2013='/home/564/lw5085/CABLE-POP-HEAD//params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc'
+gm_lut_bernacchi_2002='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
+gm_lut_walker_2013='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//gm_LUT_351x3601x7_1pt8245_Walker2013.nc'
 # 13C
-filename_d13c_atm='/home/564/lw5085/CABLE-POP-HEAD//params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
+filename_d13c_atm='/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/BIOS_through_TRENDY/params_bios//gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
 
 
 # --------------------------------------------------------------------
@@ -279,14 +280,14 @@ else
 fi
 
 cat > ${tmp}/sedtmp.${pid} << EOF
-    rainFile     = "${MetPath}/flipped_data/rain_AGCD_flipped_<startdate>_<enddate>.nc"
-    swdnFile     = "${MetPath}/flipped_data/rad_AGCD_flipped_<startdate>_<enddate>.nc"
-    TmaxFile     = "${MetPath}/flipped_data/tmax_AGCD_flipped_<startdate>_<enddate>.nc"
-    TminFile     = "${MetPath}/flipped_data/tmin_AGCD_flipped_<startdate>_<enddate>.nc"
-    vph0900File  = "${MetPath}/flipped_data/vph09_AGCD_flipped_<startdate>_<enddate>.nc"
-    vph1500File  = "${MetPath}/flipped_data/vph15_AGCD_flipped_<startdate>_<enddate>.nc"
-    windFile     = "${MetPath}/flipped_data/windspeed_AGCD_flipped_<startdate>_<enddate>.nc"
-    CO2File      = "${MetPath}/co2_17000101_20221231.txt"
+    rainFile     = "${MetPath}/BIOS_rain_<startdate>_<enddate>.nc"
+    swdnFile     = "${MetPath}/BIOS_rsds_<startdate>_<enddate>.nc"
+    TmaxFile     = "${MetPath}/BIOS_tmax_<startdate>_<enddate>.nc"
+    TminFile     = "${MetPath}/BIOS_tmin_<startdate>_<enddate>.nc"
+    vph0900File  = "${MetPath}/BIOS_vph09_<startdate>_<enddate>.nc"
+    vph1500File  = "${MetPath}/BIOS_vph15_<startdate>_<enddate>.nc"
+    windFile     = "${MetPath}/BIOS_wind_<startdate>_<enddate>.nc"
+    CO2File      = "${MetPath}/co2_bios_17000101_20231231.txt"
     LandMaskFile = "${LandMaskFile}"
     rainRecycle = T
     swdnRecycle = T
@@ -310,7 +311,7 @@ cp ${ndir}/met_names.nml ${ndir}/bios.nml ${rdir}
 cat > ${tmp}/sedtmp.${pid} << EOF
     TransitionFilePath = "${TransitionFilePath}"
     ClimateFile        = "${ClimateFile}"
-    YearStart          = 1700
+    YearStart          = 1900
     YearEnd            = 2022
 EOF
 applysed ${tmp}/sedtmp.${pid} ${ndir}/luc.nml ${rdir}/luc_${experiment}.nml
@@ -325,7 +326,7 @@ else
 fi
 
 cat > ${tmp}/sedtmp.${pid} << EOF
-    filename%met                       = ""
+    filename%met                       = "${met_type}"
     filename%veg                       = "${filename_veg}"
     filename%soil                      = "${filename_soil}"
     filename%type                      = "${SurfaceFile}"
@@ -348,9 +349,9 @@ cat > ${tmp}/sedtmp.${pid} << EOF
     cable_user%MetType                 = "${mettype}"
     output%averaging                   = "monthly"
     output%grid                        = "land"
-    output%vars5D                      = .FALSE.
+    output%vars5D                      = .true.
     leaps                              = .false.
-    cable_user%SOIL_STRUC              = "default"
+    cable_user%SOIL_STRUC              = "sli"
     cable_user%Rubisco_parameters      = "${Rubisco_params}"
     cable_user%CALL_POP                = .false.
     cable_user%coordinate_photosyn     = .false.
@@ -436,8 +437,8 @@ if [[ ${doclimate} -eq 1 ]] ; then
         cable_user%CASA_fromZero       = .true.
         cable_user%CASA_DUMP_READ      = .false.
         cable_user%CASA_DUMP_WRITE     = .true.
-        cable_user%CASA_SPIN_STARTYEAR = 1850
-        cable_user%CASA_SPIN_ENDYEAR   = 1859
+        cable_user%CASA_SPIN_STARTYEAR = 1860
+        cable_user%CASA_SPIN_ENDYEAR   = 1889
         cable_user%limit_labile        = .true.
         casafile%cnpipool              = ""
         cable_user%POP_fromZero        = .true.
@@ -496,7 +497,7 @@ if [[ ${dofromzero} -eq 1 ]] ; then
         cable_user%CASA_DUMP_READ         = .false.
         cable_user%CASA_DUMP_WRITE        = .true.
         cable_user%CASA_SPIN_STARTYEAR    = 1860
-        cable_user%CASA_SPIN_ENDYEAR      = 1869
+        cable_user%CASA_SPIN_ENDYEAR      = 1889
         cable_user%limit_labile           = .true.
         casafile%cnpipool                 = ""
         cable_user%POP_fromZero           = .true.
@@ -540,15 +541,15 @@ if [[ ${doequi1} -eq 1 ]] ; then
         # Cable
         cat > ${tmp}/sedtmp.${pid} << EOF
             cable_user%CLIMATE_fromZero    = .false.
-            cable_user%YearStart           = 1840
-            cable_user%YearEnd             = 1859
+            cable_user%YearStart           = 1860
+            cable_user%YearEnd             = 1889
             icycle                         = 2
             spincasa                       = .false.
             cable_user%CASA_fromZero       = .false.
             cable_user%CASA_DUMP_READ      = .false.
             cable_user%CASA_DUMP_WRITE     = .true.
             cable_user%CASA_SPIN_STARTYEAR = 1860
-            cable_user%CASA_SPIN_ENDYEAR   = 1869
+            cable_user%CASA_SPIN_ENDYEAR   = 1889
             cable_user%limit_labile        = .true.
             cable_user%POP_fromZero        = .false.
             cable_user%POP_out             = "ini"
@@ -579,15 +580,15 @@ EOF
         # Cable
         cat > ${tmp}/sedtmp.${pid} << EOF
             cable_user%CLIMATE_fromZero    = .false.
-            cable_user%YearStart           = 1840
-            cable_user%YearEnd             = 1859
+            cable_user%YearStart           = 1860
+            cable_user%YearEnd             = 1889
             icycle                         = 12
             spincasa                       = .true.
             cable_user%CASA_fromZero       = .false.
             cable_user%CASA_DUMP_READ      = .true.
             cable_user%CASA_DUMP_WRITE     = .false.
-            cable_user%CASA_SPIN_STARTYEAR = 1840
-            cable_user%CASA_SPIN_ENDYEAR   = 1859
+            cable_user%CASA_SPIN_STARTYEAR = 1860
+            cable_user%CASA_SPIN_ENDYEAR   = 1889
             cable_user%limit_labile        = .true.
             cable_user%POP_fromZero        = .false.
             cable_user%POP_out             = "ini"
@@ -626,15 +627,15 @@ if [[ ${doequi2} -eq 1 ]] ; then
 	# Cable
         cat > ${tmp}/sedtmp.${pid} << EOF
             cable_user%CLIMATE_fromZero    = .false.
-            cable_user%YearStart           = 1840
-            cable_user%YearEnd             = 1859
+            cable_user%YearStart           = 1860
+            cable_user%YearEnd             = 1889
             icycle                         = 2
             spincasa                       = .false.
             cable_user%CASA_fromZero       = .false.
             cable_user%CASA_DUMP_READ      = .false.
             cable_user%CASA_DUMP_WRITE     = .true.
             cable_user%CASA_SPIN_STARTYEAR = 1860
-            cable_user%CASA_SPIN_ENDYEAR   = 1869
+            cable_user%CASA_SPIN_ENDYEAR   = 1889
             cable_user%limit_labile        = .false.
             cable_user%POP_fromZero        = .false.
             cable_user%POP_out             = "ini"
@@ -667,15 +668,15 @@ EOF
             # Cable
             cat > ${tmp}/sedtmp.${pid} << EOF
                 cable_user%CLIMATE_fromZero    = .false.
-                cable_user%YearStart           = 1840
-                cable_user%YearEnd             = 1859
+                cable_user%YearStart           = 1860
+                cable_user%YearEnd             = 1889
                 icycle                         = 12
                 spincasa                       = .true.
                 cable_user%CASA_fromZero       = .false.
                 cable_user%CASA_DUMP_READ      = .true.
                 cable_user%CASA_DUMP_WRITE     = .false.
-                cable_user%CASA_SPIN_STARTYEAR = 1840
-                cable_user%CASA_SPIN_ENDYEAR   = 1859
+                cable_user%CASA_SPIN_STARTYEAR = 1860
+                cable_user%CASA_SPIN_ENDYEAR   = 1889
                 cable_user%limit_labile        = .false.
                 cable_user%POP_fromZero        = .false.
                 cable_user%POP_out             = "ini"
@@ -725,8 +726,8 @@ EOF
         cable_user%CASA_fromZero        = .false.
         cable_user%CASA_DUMP_READ       = .true.
         cable_user%CASA_DUMP_WRITE      = .false.
-        cable_user%CASA_SPIN_STARTYEAR  = 1841
-        cable_user%CASA_SPIN_ENDYEAR    = 1860
+        cable_user%CASA_SPIN_STARTYEAR  = 1860
+        cable_user%CASA_SPIN_ENDYEAR    = 1889
         cable_user%limit_labile         = .false.
         cable_user%POP_fromZero         = .false.
         cable_user%POP_out              = "ini"
@@ -740,7 +741,7 @@ EOF
     # run model
     cd ${rdir}
     irm logs/log_cable.txt logs/log_out_cable.txt
-    ./${iexe} > logs/log_out_cable.txt
+    ddt --connect ./${iexe} > logs/log_out_cable.txt
     saveid ${rid} ${mettype} ${doc13o2}
     cd ${pdir}
 fi
@@ -754,7 +755,7 @@ if [[ ${doinidyn} -eq 1 ]] ; then
 
     # Met forcing
     YearStart=1700
-    YearEnd=1900
+    YearEnd=1899
     rid=${YearStart}_${YearEnd}
 	         
     if [[ "${experiment}" == "S1" || "${experiment}" == "S2" || "${experiment}" == "S3" ]] ; then
@@ -788,7 +789,7 @@ EOF
 EOF
     else
        cat > ${tmp}/sedtmp.${pid} << EOF
-           YearStart = 1700
+           YearStart = 1900
            YearEnd   = ${YearEnd}
 EOF
     fi
@@ -816,7 +817,7 @@ EOF
         cable_user%POP_fromZero        = .false.
         cable_user%POP_out             = "ini"
         cable_user%POPLUC              = .true.
-        cable_user%POPLUC_RunType      = "static"
+        cable_user%POPLUC_RunType      = ${POPLUC_RunType}
 EOF
     applysed ${tmp}/sedtmp.${pid} ${rdir}/cable_${experiment}.nml ${rdir}/cable.nml
     # run model
@@ -835,7 +836,7 @@ if [[ ${dofinal} -eq 1 ]] ; then
     echo "7. Final centennial run"
 
     # Met forcing
-    YearStart=1901
+    YearStart=1900
     YearEnd=2022
     rid=${YearStart}_${YearEnd}
     if [[ "${experiment}" == "S1" ]] ; then
@@ -886,7 +887,7 @@ EOF
 EOF
     else
        cat > ${tmp}/sedtmp.${pid} << EOF
-           YearStart = 1700
+           YearStart = 1900
            YearEnd   = ${YearEnd}
 EOF
     fi
@@ -912,7 +913,7 @@ EOF
         cable_user%CASA_SPIN_ENDYEAR   = 1859
         cable_user%limit_labile        = .false.
         cable_user%POP_fromZero        = .false.
-        cable_user%POP_out             = "ini"
+        cable_user%POP_out             = "epi"
         cable_user%POPLUC              = .true.
         cable_user%POPLUC_RunType      = "${POPLUC_RunType}"
 EOF

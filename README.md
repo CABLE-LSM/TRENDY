@@ -12,7 +12,7 @@ Copy these scripts to do the desired run directory on Gadi. Access to the HH5 pr
 * Specify the location of the ```cable``` repository, by setting the ```cablecode``` variable on line 46.
 * Set the experiment to run by setting the ```experiment``` variable on line 26. The experiment names correspond to a set of internal configuration options.
 
-The changes in this branch as compared to the trunk reflect a series of changes to the Met input routines which are currently contained in CABLE PR [290](https://github.com/CABLE-LSM/CABLE/pull/290). The changes are a first pass at making the input routines generalised. The namelist options ```Run``` and ```MetVersion``` that set a series of options inside the code have been removed, and replaced with options in ```cru.nml``` which permit the same behaviour.
+The changes in this branch as compared to the trunk reflect a series of changes to the Met input routines. The namelist options ```Run``` and ```MetVersion``` that set a series of options inside the code have been removed, and replaced with options in ```cru.nml``` which permit the same behaviour.
 
 A the new namelist options in the ```cru.nml``` are:
 * \<variable\>File: ```CHARACTER(256)```, template matching the set of files for a given met variable. Includes ```NDep```. Defaults to ```"None"```. See [Met File Template](#met-file-template) for details.
@@ -35,3 +35,7 @@ The ```run_cable.sh``` script has been modified to appropriately change the ```c
 The Met files are required to be named with a certain format, that contains the start and end date of the data in the given file in YYYYMMDD format. The start and end dates are represented by ```<startdate>``` and ```<enddate>``` in the namelist option. Taking an example from the most recent TRENDY version, the file ```crujra.v2.4.5d.pre.1901.365d.noc.daytot.1deg.nc``` can be symlinked to ```precip-19010101-19011231.nc```, and the ```rainFile``` namelist option set to ```precip-<startdate>-<enddate>.nc``` to allow it to be read by the new routines. This also handles files which span multiple years (but for now, only files which contain full years, e.g. we can't handle situations with one file containing data from 01/01/1901 to 30/06/1902 and the next from 01/07/1902 to 31/12/1903). This should allow easier substituting in and out of different Met forcing datasets.
 
 The possible internal names for each Met variable are handled by pre-preparing a set of possible Met names stored in ```namelists/met_names.nml```, which contains the possible NetCDF variable names to check for. To add a new entry for the possible Met names, increment the counter which sets the number of possible names, and add the new name to the array for the respective variable.
+
+# BIOS Notes
+
+The BIOS landmasks are contained at `/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/landmasks`. All that's required to run a different BIOS resolution is to change the `GlobalLandMaskFile` in `run_TRENDY.sh`. Set the `experiment` variable to run different experiments. The ones we're interested in are `S2` for dynamic meteorology and `S3` for dynamic meteorology with LUC.

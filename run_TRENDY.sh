@@ -25,8 +25,10 @@ module load netcdf
 #-------------------------------------------------------
 # Settings
 #-------------------------------------------------------
+# Set this to S2 for no LUC, set to S3 to include LUC
 experiment="S3"
 experiment_name="${experiment}"
+# Run the model on the first run to completion- once it's done, turn off run_model, activate merge_results and submit again
 run_model=1       # run the model or just do other steps (e.g. merging)?
 merge_results=0   # after runs are finished, merge results into one folder and backup 
                   # restart, logs, landmasks etc. (1) or keep folder structure as it is (0).
@@ -36,6 +38,7 @@ mergesteps="1900_2022"
 
 ### Spatial subruns ###
 create_landmasks=1              # create new landmask files (1) or use existing ones (0)?
+# Leave nruns as 1 for ACT9, nruns=100 (?) for 0.25 degree resolution case
 nruns=1                      # number of runs in parallel
 #extent="64.0,66.0,60.0,62.0"    # "global" or "lon_min,lon_max,lat_min,lat_max"
 extent="global"

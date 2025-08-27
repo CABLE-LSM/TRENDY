@@ -39,3 +39,10 @@ The possible internal names for each Met variable are handled by pre-preparing a
 # BIOS Notes
 
 The BIOS landmasks are contained at `/g/data/rp23/experiments/2024-04-17_BIOS3-merge/lw5085/landmasks`. All that's required to run a different BIOS resolution is to change the `GlobalLandMaskFile` in `run_TRENDY.sh`. Set the `experiment` variable to run different experiments. The ones we're interested in are `S2` for dynamic meteorology and `S3` for dynamic meteorology with LUC.
+
+Run process:
+
+1. Check the `experiment` in `run_TRENDY.sh`: set to `S2` for no LUC, set to `S3` for LUC.
+2. Check location of parameter and source code directories are correct
+3. Check which landmask to use for given test case
+4. Execute with `./run_TRENDY.sh` with `run_model=1`, then when finished, execute again with `run_model=0` and `merge_results=1`.

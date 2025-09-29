@@ -19,7 +19,6 @@
     RecycStartYear = 1981
     CO2Method = "1700"
     NDepMethod = "1850"
-    ReadDiffFrac = .FALSE.
     DThrs        = 3.0                ! **CABLE** timestep hours (not the met timestep)
     LeapYears    = .TRUE.
     DirectRead   = .TRUE.

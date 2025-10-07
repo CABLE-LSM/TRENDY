@@ -741,7 +741,7 @@ EOF
     # run model
     cd ${rdir}
     irm logs/log_cable.txt logs/log_out_cable.txt
-    ddt --connect ./${iexe} > logs/log_out_cable.txt
+    ./${iexe} > logs/log_out_cable.txt
     saveid ${rid} ${mettype} ${doc13o2}
     cd ${pdir}
 fi

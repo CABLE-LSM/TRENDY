@@ -33,61 +33,47 @@ def parse_args():
 
     return parser.parse_args()
 
-def build_variable(output_var, runs_var, runs_indices):
+def build_variable(runs_var, runs_indices, grid_size):
     """Take the data from run_var and place it in output_var, using the run_indices to map
     from the vector to matrix format."""
 
-    # Create the non-space dimension slices
-    leading_dims = tuple([slice(None) for _ in range(output_var.ndim - 2)])
+    # Create the non-space dimension slices- these are effectively just ":" for
+    # all dimensions bar space
+    leading_dims = tuple([slice(None) for _ in range(runs_var[1].ndim - 1)])
 
-    print(f"Shape: {output_var.shape}")
+    # Determine size of the array
+    arr_size = tuple([runs_var[1].sizes[dim] for dim in runs_var[1].dims[:-1]])
+    arr_size += grid_size
+    output_var = numpy.ndarray(arr_size, dtype=runs_var[1].dtype)
+
+    # Now for each point in the run's landmask, place the array of data in the
+    # correct place
     for (run_var, run_indices) in zip(runs_var, runs_indices):
-        # Convert the set of indices to a single indexer over all dimensions
-        # lat_inds, lon_inds = zip(*run_indices)
-        #indexing_array_grid = (leading_dims + (lat_inds, lon_inds))
-        #output_var[indexing_array_grid] = run_var.to_numpy()
         for (pt_id, pt) in enumerate(run_indices):
             output_var[leading_dims + pt] = run_var[leading_dims + (pt_id,)]
 
-def insert_data(output_dataset, run_output_file, landmask_file):
-    """Take the data from run_output and insert it into output_dataset using the mask
-    defined by the given landmask."""
-
-    # Load in the run specific files
-    run_output = xarray.open_dataset(run_output_file)
-    landmask = xarray.open_dataset(landmask_file)
-
-    # Get the point locations from the landmask. These will always represent the last
-    # 2 dimensions of the array.
-    point_locations = [tuple(point) for point in numpy.argwhere(landmask["land"].to_numpy() == 1)]
-
-    # Now iterate through the variables we want to output- again, need to exclude some
-    # variables
-    exclude_vars = ["local_lat", "local_lon", "latitude", "longitude"]
-    for var in output_dataset.data_vars:
-        if var not in exclude_vars:
-            # We need to create the slice for the non-space dimensions. This is effectively
-            # a tuple of (:, :, ...) of length equal to the non-space dimensions of the
-            # variable. This is then added to the points extracted from the mask to create
-            # an indexer of (:, :, ..., lat, lon) for each point in the mask.
-            leading_dims = tuple([slice(None) for _ in range(len(run_output[var].dims) - 1)])
-            print(f"leading_dims: {leading_dims}")
-            for pt_id, point in enumerate(point_locations):
-                print(f"Run index: {leading_dims + (pt_id,)}, output index: {leading_dims + point}")
-                output_dataset[var][leading_dims + point] = \
-                        run_output[var][leading_dims + (pt_id,)]
-
-def code_from_variable(dataset, var):
-    """Create a code describing how to build the numpy array for a given variable."""
-
-    var_dims = "_".join(dataset[var].dims)
-    var_dtype = str(dataset[var].encoding["dtype"])
-
-    return "_".join([var_dims, var_dtype])
+    return output_var
 
 def merge_outputs(experiment, nruns, file):
     """Merge the outputs from the specified stage from the given experiment
-    that was run with nruns."""
+    that was run with nruns.
+
+    The process is:
+        1. Create a template for the dataset, by inspecting the dimensions on
+            one of the run outputs.
+        2. Write the dataset to disk as NetCDF, so that we can append the
+            data variables directly on disk. If the dataset is created in
+            memory then written, all the data variables are concretized at once
+            overloading the RAM. This way only one data variable is concretized
+            at a time.
+        3. Determine which indices in the global landmask are associated with
+            each run, by looking at the respective landmasks. Each run will get
+            an iterable of indices, which will be associated with a given
+            run output.
+        4. Use the indices to place the outputs from a given run into the
+            correct locations on the grid (in an xarray.DataArray).
+        5. Append the DataArray to the NetCDF file on disk.
+    """
 
     # Create the file templates
     landmask_file = lambda n: f"{experiment}/run{n}/landmask/landmask{n}.nc"
@@ -108,45 +94,7 @@ def merge_outputs(experiment, nruns, file):
     # created automatically during creation of the variables
     coordinate_mapping = {dim: ref_output[dim] for dim in ref_output.dims.keys()}
 
-    # The vector outputs from each stage additionally have x and y variables which
-    # we don't want to include, and latitude/longitude that we'll fill from the
-    # landmask definition. Time will also be handled in a bespoke fashion
-    exclude_vars = ["x", "y", "latitude", "longitude", "local_lat", "local_lon", "time"]
-
-    # We can't preassign arrays for all of the variables, since this blows the RAM of a
-    # hugemem node. Instead, assign a single array for each possible shape, and fill it
-    # with the relevant data. We then pass the correctly sized array to the merging
-    # function, to be filled and then assigned to the relevant variable.
-    var_arrays = {}
-    for var in ref_output.data_vars:
-        if var not in exclude_vars:
-            # Drop the "land" dimension, which is the last dimension, and add ("y", "x")
-            var_dims = ref_output[var].dims
-            var_dtype = ref_output[var].encoding["dtype"]
-
-            if (var_dims, var_dtype) not in var_arrays.keys():
-                print(f"Creating a new array for {(var_dims, var_dtype)}")
-                arr_size = tuple([ref_output.sizes[dim] for dim in var_dims])
-                
-                # Drop the land dimension, and add the x, y
-                arr_size = arr_size[:-1] + (ref_landmask.sizes["latitude"], ref_landmask.sizes["longitude"])
-                arr = numpy.ma.masked_all(arr_size, dtype=numpy.dtype(var_dtype))
-                var_arrays[(var_dims, var_dtype)] = arr
-
-    """
-    # Create the dictionary of NetCDF variables
-    data_var_mapping = {}
-    for var in ref_output.data_vars:
-        if var not in exclude_vars:
-            dim_sizes = tuple([ref_output[dim].size for dim in var_dims])
-
-            # Create the new array to store the data, using the reference data type
-            data_arr = numpy.ma.masked_all(dim_sizes, dtype=ref_output[var].encoding['dtype'])
-
-            # Now we can create the required tuple used to build NetCDF variables with xarray
-            data_var_mapping[var] = (var_dims, data_arr, ref_output[var].attrs)s
-    """
-    # Now we can create the dataset, and begin filling it
+    # Now we can create the template dataset
     output_dataset = xarray.Dataset(
             coords=coordinate_mapping
             )
@@ -158,6 +106,12 @@ def merge_outputs(experiment, nruns, file):
             engine='h5netcdf',
             mode='w'
             )
+
+    # The vector outputs from each stage additionally have x and y variables
+    # which we don't want to include, and latitude/longitude that we'll fill 
+    # from the landmask definition. Time will also be handled in a bespoke
+    # fashion
+    exclude_vars = ["x", "y", "latitude", "longitude", "local_lat", "local_lon", "time"]
 
     # Pre-compute the active indices for all runs, using the run landmasks
     runs_indices = [0] * nruns
@@ -172,29 +126,27 @@ def merge_outputs(experiment, nruns, file):
     # Set the encoding to be used by all variables
     var_encoding = {"zlib": True, "complevel": 4, "shuffle": True}
 
-    # Now iterate through the variables, filling the array of the right size with the variable
-    # data using the indices extracted prior
+    # Set up the grid size
+    grid_size = (ref_landmask.sizes["latitude"], ref_landmask.sizes["longitude"])
+
+    # Now iterate through the variables, filling the array of the right size
+    # with the variable data using the indices extracted prior
     for var in ref_output.data_vars:
         if var not in exclude_vars:
             runs_vars = [runs_outputs[run-1][var] for run in range(1, nruns+1)]
-            var_dims = ref_output[var].dims
-            var_dtype = ref_output[var].encoding["dtype"]
-            build_variable(
-                    var_arrays[(var_dims, var_dtype)],
-                    runs_vars,
-                    runs_indices
-                    )
-            print(f"Applied dimensions: {(var_dims[:-1] + ('latitude', 'longitude'))}")
+            var_data = build_variable(runs_vars, runs_indices, grid_size)
+
+            # For each data variable, we want to convert the dimensions from
+            # (..., ..., land) to (..., ..., latitude, longitude)
+            var_dims = tuple(dim for dim in ref_output[var].dims[:-1])
+            var_dims += ("latitude", "longitude")
+
             output_var = xarray.DataArray(
-                    var_arrays[(var_dims, var_dtype)],
-                    dims = var_dims[:-1] + ("latitude", "longitude"),
+                    var_data,
+                    dims = var_dims,
                     attrs = ref_output[var].attrs,
                     name=var
                     )
-
-            ds = xarray.open_dataset(f"{experiment}/output/{file}.nc")
-            print(f"Dataset dimensions: {ds.dims}")
-            ds.close()
 
             output_var.encoding = var_encoding
             if numpy.issubdtype(output_var.dtype, numpy.floating):
@@ -210,11 +162,6 @@ def merge_outputs(experiment, nruns, file):
                     engine='h5netcdf',
                     mode='a'
                     )
-
-    # Fill in the data from each of the runs
-    # for run in range(1, nruns+1):
-        # insert_data(output_dataset, run_output_file(run), landmask_file(run))
-        # gc.collect()
 
 if __name__ == "__main__":
     args = parse_args()

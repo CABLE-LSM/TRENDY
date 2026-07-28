@@ -35,3 +35,9 @@ The ```run_cable.sh``` script has been modified to appropriately change the ```c
 The Met files are required to be named with a certain format, that contains the start and end date of the data in the given file in YYYYMMDD format. The start and end dates are represented by ```<startdate>``` and ```<enddate>``` in the namelist option. Taking an example from the most recent TRENDY version, the file ```crujra.v2.4.5d.pre.1901.365d.noc.daytot.1deg.nc``` can be symlinked to ```precip-19010101-19011231.nc```, and the ```rainFile``` namelist option set to ```precip-<startdate>-<enddate>.nc``` to allow it to be read by the new routines. This also handles files which span multiple years (but for now, only files which contain full years, e.g. we can't handle situations with one file containing data from 01/01/1901 to 30/06/1902 and the next from 01/07/1902 to 31/12/1903). This should allow easier substituting in and out of different Met forcing datasets.
 
 The possible internal names for each Met variable are handled by pre-preparing a set of possible Met names stored in ```namelists/met_names.nml```, which contains the possible NetCDF variable names to check for. To add a new entry for the possible Met names, increment the counter which sets the number of possible names, and add the new name to the array for the respective variable.
+
+There is an additional `symlink_files.sh` convenience script that has been added. It can symlink all files containing a single year designation to new names that replace the year with `<Year>0101-<Year>1201` which is the required format for the input reader. Usage is:
+
+```
+./symlink_files.sh <folder_containing_orig_files> <folder_to_symlink_into>
+```

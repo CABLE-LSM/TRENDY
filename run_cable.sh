@@ -71,25 +71,25 @@ experiment='S0'
 # Name of the experiment (= name of output folder)     
 experiment_name='S0'
 # Code directory
-cablecode='/home/564/lw5085/CABLE-POP-HEAD'
+cablecode='/g/data/rp23/lw5085/CABLE-POP_TRENDY'
 # Script directory
-rundir='/g/data/rp23/experiments/2024-03-12_CABLE4-dev/lw5085/TRENDY'
+rundir='/g/data/rp23/lw5085/TRENDY'
 # Data directory
 datadir='/g/data/rp23/data/no_provenance/'
 # Cable executable
-exe='/home/564/lw5085/CABLE-POP-HEAD/bin/cable'
+exe='/g/data/rp23/lw5085/CABLE-POP_TRENDY/bin/cable'
 # Global Meteorology
-MetPath='/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/'
+MetPath='/g/data/rp23/lw5085/TRENDY_symlinks/'
 # MetVersion
 MetVersion=''
 # Global LUC
-TransitionFilePath='/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/luc/'
+TransitionFilePath='/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/luc/'
 # Global Surface file 
 SurfaceFile='/g/data/rp23/data/no_provenance//gridinfo/gridinfo_CSIRO_1x1.nc'
 # Output directory of the run
-runpath='/g/data/rp23/experiments/2024-03-12_CABLE4-dev/lw5085/TRENDY/S0/run4'
+runpath='/g/data/rp23/lw5085/TRENDY/S0/run4'
 # Land Mask used for this run
-LandMaskFile='/g/data/rp23/experiments/2024-03-12_CABLE4-dev/lw5085/TRENDY/S0/run4/landmask/landmask4.nc'
+LandMaskFile='/g/data/rp23/lw5085/TRENDY/S0/run4/landmask/landmask4.nc'
 
 
 ## ----------------------------------------------------------------
@@ -130,19 +130,19 @@ doc13o2=0           # 1/0: Do/Do not calculate 13C
 c13o2_simple_disc=0 # 1/0: simple or full 13C leaf discrimination
 # Parameter files
 namelistpath="${rundir}/namelists"
-filename_veg='/home/564/lw5085/CABLE-POP-HEAD/params/v12/def_veg_params.txt'
-filename_soil='/home/564/lw5085/CABLE-POP-HEAD/params/v12/def_soil_params.txt'
-casafile_cnpbiome='/home/564/lw5085/CABLE-POP-HEAD/params/v12/pftlookup.csv'
+filename_veg='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/def_veg_params.txt'
+filename_soil='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/def_soil_params.txt'
+casafile_cnpbiome='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/pftlookup.csv'
 # Climate restart file 
 # changes for TRENDY >= v11: ClimateFile always created!
 # ClimateFile="/g/data/x45/ipbes/cable_climate/ipsl_climate_rst_glob_1deg.nc"
 #ClimateFile="$(dirname ${runpath})/climate_restart/cru_climate_rst.nc"
 ClimateFile="${runpath}/cru_climate_rst.nc"
 # gm lookup tables
-gm_lut_bernacchi_2002='/home/564/lw5085/CABLE-POP-HEAD/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
-gm_lut_walker_2013='/home/564/lw5085/CABLE-POP-HEAD/params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc'
+gm_lut_bernacchi_2002='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
+gm_lut_walker_2013='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc'
 # 13C
-filename_d13c_atm='/home/564/lw5085/CABLE-POP-HEAD/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
+filename_d13c_atm='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
 
 
 # --------------------------------------------------------------------
@@ -279,17 +279,17 @@ else
 fi
 
 cat > ${tmp}/sedtmp.${pid} << EOF
-    rainFile     = "${MetPath}/met/linked/pre_<startdate>_<enddate>.nc"
-    lwdnFile     = "${MetPath}/met/linked/dlwrf_<startdate>_<enddate>.nc"
-    swdnFile     = "${MetPath}/met/linked/tswrf_<startdate>_<enddate>.nc"
-    presFile     = "${MetPath}/met/linked/pres_<startdate>_<enddate>.nc"
-    qairFile     = "${MetPath}/met/linked/spfh_<startdate>_<enddate>.nc"
-    TmaxFile     = "${MetPath}/met/linked/tmax_<startdate>_<enddate>.nc"
-    TminFile     = "${MetPath}/met/linked/tmin_<startdate>_<enddate>.nc"
-    uwindFile    = "${MetPath}/met/linked/ugrd_<startdate>_<enddate>.nc"
-    vwindFile    = "${MetPath}/met/linked/vgrd_<startdate>_<enddate>.nc"
-    fDiffFile    = "${MetPath}/met/linked/fd_<startdate>_<enddate>.nc"
-    CO2File      = "${MetPath}/co2/global_co2_ann_1700_2023.txt"
+    rainFile     = "${MetPath}/met/crujra.v4.10.5d.pre.<startdate>-<enddate>.365d.noc.daytot.1deg.nc"
+    lwdnFile     = "${MetPath}/met/crujra.v4.10.5d.dlwrf.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
+    swdnFile     = "${MetPath}/met/tswrf_v15_<startdate>-<enddate>.daymean.1deg.nc"
+    presFile     = "${MetPath}/met/crujra.v4.10.5d.pres.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
+    qairFile     = "${MetPath}/met/crujra.v4.10.5d.spfh.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
+    TmaxFile     = "${MetPath}/met/crujra.v4.10.5d.tmax.<startdate>-<enddate>.365d.noc.daymax.1deg.nc"
+    TminFile     = "${MetPath}/met/crujra.v4.10.5d.tmin.<startdate>-<enddate>.365d.noc.daymin.1deg.nc"
+    uwindFile    = "${MetPath}/met/crujra.v4.10.5d.ugrd.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
+    vwindFile    = "${MetPath}/met/crujra.v4.10.5d.vgrd.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
+    fDiffFile    = "${MetPath}/met/fd_v15_<startdate>-<enddate>.daymean.1deg.nc"
+    CO2File      = "${MetPath}/co2/global_co2_ann_1700_2025.txt"
     NDepFile     = "${MetPath}/ndep/NDep_<startdate>_<enddate>.nc"
     LandMaskFile = "${LandMaskFile}"
     rainRecycle = T
@@ -304,7 +304,6 @@ cat > ${tmp}/sedtmp.${pid} << EOF
     fDiffRecycle = T
     CO2Method = "1700"
     NDepMethod = "1850"
-    ReadDiffFrac = ${fdiff_bool}
     DThrs        = 3.0                ! **CABLE** timestep hours (not the met timestep)
 EOF
 applysed ${tmp}/sedtmp.${pid} ${ndir}/cru.nml ${rdir}/cru_${experiment}.nml

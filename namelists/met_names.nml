@@ -17,6 +17,12 @@
     uwindNames = "ugrd", "Wind_Enoalign" "uas"
     vwindNo = 3
     vwindNames = "vgrd", "Wind_Nnoalign" "vas"
+    windNo = 1
+    windNames = "windspeed"
+    vph0900No = 1
+    vph0900Names = "vph09"
+    vph1500No = 1
+    vph1500Names = "vph15"
     fdiffNo = 1
     fdiffNames = "fd"
 /

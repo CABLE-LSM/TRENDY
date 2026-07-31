@@ -17,9 +17,15 @@
 # Modules
 #-------------------------------------------------------
 module purge
+module load R/4.2.2
+module load python3/3.10.4
+module load proj/6.2.1
+module load gdal/3.0.2
+module load geos/3.8.0
 module load intel-compiler/2021.8.0
-module use /g/data/hh5/public/modules
-module load conda_concept/analysis3
+export R_LIBS=/g/data/x45/R/libs
+export PYTHONPATH=/g/data/x45/python3.10.4/lib/python3.10/site-packages
+
 
 #-------------------------------------------------------
 # Settings
@@ -27,68 +33,60 @@ module load conda_concept/analysis3
 experiment="S0"
 experiment_name="${experiment}"
 run_model=1       # run the model or just do other steps (e.g. merging)?
-merge_results=0   # after runs are finished, merge results into one folder and backup 
+merge_results=1   # after runs are finished, merge results into one folder and backup 
                   # restart, logs, landmasks etc. (1) or keep folder structure as it is (0).
                   # The latter is useful if runs are to be resumed from restart files. 
-#mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2022"   # sub-steps to be merged
-mergesteps="1700_1900 1901_2022"
+#mergesteps="zero_biomass spinup_nutrient_limited_1 spinup_nutrient_limited_2 1700_1900 1901_2023"   # sub-steps to be merged
+mergesteps="1700_1900 1901_2023"
 
 ### Spatial subruns ###
 create_landmasks=1               # create new landmask files (1) or use existing ones (0)?
-nruns=100                        # number of runs in parallel
-#extent="64.0,66.0,60.0,62.0"    # "global" or "lon_min,lon_max,lat_min,lat_max"
-extent="global"
+nruns=100                         # number of runs in parallel
+extent="global"                  # "global" or "lon_min,lon_max,lat_min,lat_max"
+#extent="-2.0,25.0,35.0,60.0"     # Europe
+#extent="-102.6,-96.4,37.4,39.6"       # USA
 climate_restart="cru_climate_rst"       # name of climate restart file (without file extension)
 keep_dump=1                             # keep dump files (1) or discard (0)? They are always kept for LUC runs
 
 
 ### Directories and files###
-# Code directory- set this to where your version of the code is located
-cablecode=""
+# Output directory
+outpath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/${experiment_name}"
+# Code directory
+cablecode="/home/599/jk8585/CABLE_code/CABLE-POP_TRENDY"
 # Run directory
-rundir="${PWD}"
-# Output directory- where the results are written to
-outpath="${rundir}/${experiment_name}"
-# Parameter directory
-paramdir="${cablecode}/params/v12"
-# LUT directory
-lutdir="${cablecode}/params"
-
-# The various scripts used are contained in the configuration repository
-landmask_script="${rundir}/split_landmask.py"
-run_script="${rundir}/run_cable.sh"
-merge_script="${rundir}/merge_outputs.sh"
-cleanup_script="${rundir}/cleanup.sh"
-
-# Cable executable- we should move this to bin
+rundir="/home/599/jk8585/CABLE_run/TRENDY_v13"
+# Scripts
+landmask_script="${rundir}/scripts/split_landmask.R"
+run_script="${rundir}/scripts/run_cable.sh"
+merge_script="${rundir}/scripts/merge_outputs.sh"
+cleanup_script="${rundir}/scripts/cleanup.sh"
+# Cable executable
 exe="${cablecode}/bin/cable"
 
 # Append the location of the cablepop python module to the PYTHONPATH
 export PYTHONPATH=${cablecode}/scripts:${PYTHONPATH}
-
-# The location of the data- note that the "aux" variable has been removed,
-# and all the data now lives in rp23/no_provenance
-datadir="/g/data/rp23/data/no_provenance/"
+# CABLE-AUX directory (uses offline/gridinfo_CSIRO_1x1.nc and offline/modis_phenology_csiro.txt)
+aux="/g/data/rp23/experiments/2024-07-01_TRENDYv13/aux"
 # Global Meteorology
-GlobalMetPath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/"
+#GlobalMetPath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/v12/met"
+GlobalMetPath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/met"
 # Global LUC
-GlobalTransitionFilePath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/luc/"
+#GlobalTransitionFilePath="/g/data/x45/LUH2/GCB_2023/1deg/EXTRACT"
+#GlobalTransitionFilePath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/v12/luc/processed"
+GlobalTransitionFilePath="/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/luc"
 # Global Surface file 
-SurfaceFile="${datadir}/gridinfo/gridinfo_CSIRO_1x1.nc"
+SurfaceFile="${aux}/gridinfo_CSIRO_1x1.nc"   
 # Global Land Mask
-GlobalLandMaskFile="${datadir}/landmask/glob_ipsl_1x1.nc"
+GlobalLandMaskFile="${aux}/landmasks/glob_ipsl_1x1.nc"
 # vegetation parameters
-filename_veg="${paramdir}/def_veg_params.txt"
+filename_veg="${rundir}/params/def_veg_params.txt"
 # soil parameters
-filename_soil="${paramdir}/def_soil_params.txt"
+filename_soil="${rundir}/params/def_soil_params.txt"
 # casa-cnp parameters
-casafile_cnpbiome="${paramdir}/pftlookup.csv"
-# mesophyll conductance lookup tables
-gm_lut_bernacchi_2002="${lutdir}/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc"
-gm_lut_walker_2013="${lutdir}/gm_LUT_351x3601x7_1pt8245_Walker2013.nc"
-# 13C
-filename_d13c_atm="${lutdir}/graven_et_al_gmd_2017-table_s1-delta_13c-1700-2025.txt"
+casafile_cnpbiome="${rundir}/params/pftlookup.csv"
 
+## ---------------------------- End Settings ---------------------------------- ## 
 # OS and Workload manager
 ised="sed --in-place=.old"  # Linux: "sed --in-place=.old" ; macOS/Unix: "sed -i .old"
 pqsub="qsub"  # PBS: "qsub" ; Slurm: "sbatch --parsable"
@@ -108,7 +106,7 @@ ntag="PBS -N "  # PBS: "PBS -N " ; Slurm: "SBATCH --job-name="
 # -----------------------------------------------------------------------
 if [[ ${create_landmasks} -eq 1 ]] ; then
     echo "Create landmasks"
-    ${landmask_script} ${GlobalLandMaskFile} ${nruns} ${outpath} -e ${extent}
+    ${landmask_script} ${GlobalLandMaskFile} ${nruns} ${outpath} ${extent}
     echo "Finished creating landmasks"
 fi
 
@@ -124,22 +122,19 @@ if [[ ${run_model} -eq 1 ]] ; then
     ${ised} -e "s|^experiment_name=.*|experiment_name='${experiment_name}'|" ${run_script}
     ${ised} -e "s|^cablecode=.*|cablecode='${cablecode}'|" ${run_script}
     ${ised} -e "s|^rundir=.*|rundir='${rundir}'|" ${run_script}
-    ${ised} -e "s|^datadir=.*|datadir='${datadir}'|" ${run_script}
     ${ised} -e "s|^exe=.*|exe='${exe}'|" ${run_script}
+    ${ised} -e "s|^aux=.*|aux='${aux}'|" ${run_script}
     ${ised} -e "s|^MetPath=.*|MetPath='${GlobalMetPath}'|" ${run_script}
-    ${ised} -e "s|^MetVersion=.*|MetVersion='${MetVersion}'|" ${run_script}
     ${ised} -e "s|^TransitionFilePath=.*|TransitionFilePath='${GlobalTransitionFilePath}'|" ${run_script}
     ${ised} -e "s|^SurfaceFile=.*|SurfaceFile='${SurfaceFile}'|" ${run_script}
     ${ised} -e "s|^filename_veg=.*|filename_veg='${filename_veg}'|" ${run_script}
     ${ised} -e "s|^filename_soil=.*|filename_soil='${filename_soil}'|" ${run_script}
     ${ised} -e "s|^casafile_cnpbiome=.*|casafile_cnpbiome='${casafile_cnpbiome}'|" ${run_script}
-    ${ised} -e "s|^gm_lut_bernacchi_2002=.*|gm_lut_bernacchi_2002='${gm_lut_bernacchi_2002}'|" ${run_script}
-    ${ised} -e "s|^gm_lut_walker_2013=.*|gm_lut_walker_2013='${gm_lut_walker_2013}'|" ${run_script}
-    ${ised} -e "s|^filename_d13c_atm=.*|filename_d13c_atm='${gm_lut_bernacchi_2002}'|" ${run_script}
     ${ised} -e "s|^ised=.*|ised='${ised}'|" ${run_script}
 
     # 2.2) Loop over landmasks and start runs
     for ((irun=1; irun<=${nruns}; irun++)) ; do
+        #irun=1
         runpath="${outpath}/run${irun}"
         ${ised} -e "s|^runpath=.*|runpath='${runpath}'|" ${run_script}
         ${ised} -e "s|^LandMaskFile=.*|LandMaskFile='${runpath}/landmask/landmask${irun}.nc'|" ${run_script}
@@ -166,11 +161,14 @@ if [[ ${merge_results} -eq 1 ]] ; then
     for mergestep in ${mergesteps} ; do
         for ftype in ${ftypes} ; do
             if [[ ("${ftype}" != "LUC") || ("${experiment}" == "S3" && ("${mergestep}" == "1700_1900" || "${mergestep}" == "1901_"* )) ]] ; then
-                ${ised} -e "s|^python3.*|python3 ${rundir}/merge_to_output2d.py -v -z -o ${outfinal}/cru_out_${ftype}_${mergestep}.nc ${outpath}/run*/outputs/cru_out_${ftype}_${mergestep}.nc|" ${merge_script}
+                ${ised} -e "s|^#${ntag}.*|#${ntag}${experiment_name}_merge|" ${merge_script}
+                ${ised} -e "s|^python3.*|python3 ${rundir}/scripts/aux/merge_to_output2d.py -v -z -o ${outfinal}/cru_out_${ftype}_${mergestep}.nc ${outpath}/run*/outputs/cru_out_${ftype}_${mergestep}.nc|" ${merge_script}
                 if [[ ${run_model} -eq 1 ]] ; then
-                    MERGE_IDS="${MERGE_IDS}:$($(dqsub ${RUN_IDS}) ${merge_script})"
+                    #MERGE_IDS="${MERGE_IDS}:$($(dqsub ${RUN_IDS}) ${merge_script})"
+                    MERGE_IDS="${MERGE_IDS}:$(qsub -W "depend=afterok${RUN_IDS}" $merge_script)"
                 else
-                    MERGE_IDS="${MERGE_IDS}:$(${pqsub} ${merge_script})"
+                    #MERGE_IDS="${MERGE_IDS}:$(${pqsub} ${merge_script})"
+                    MERGE_IDS="${MERGE_IDS}:$(qsub $merge_script)"
                 fi
             fi
         done

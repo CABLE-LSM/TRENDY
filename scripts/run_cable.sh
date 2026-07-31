@@ -6,15 +6,16 @@
 #PBS -P rp23
 #PBS -q normal
 #PBS -p 600
-#PBS -l walltime=10:30:00
+#PBS -l walltime=18:30:00
 #PBS -l mem=4GB
 #PBS -l ncpus=1
-#PBS -l storage=gdata/rp23+scratch/rp23+scratch/hh5
+#PBS -l storage=gdata/x45+gdata/rp23
 #PBS -l software=netCDF:MPI:Intel:GNU
 #PBS -r y
 #PBS -l wd
 #PBS -j oe
 #PBS -S /bin/bash
+
 
 # --------------------------------------------------------------------
 #
@@ -71,25 +72,23 @@ experiment='S0'
 # Name of the experiment (= name of output folder)     
 experiment_name='S0'
 # Code directory
-cablecode='/g/data/rp23/lw5085/CABLE-POP_TRENDY'
+cablecode='/home/599/jk8585/CABLE_code/CABLE-POP_TRENDY'
 # Script directory
-rundir='/g/data/rp23/lw5085/TRENDY'
-# Data directory
-datadir='/g/data/rp23/data/no_provenance/'
+rundir='/home/599/jk8585/CABLE_run/TRENDY_v13'
 # Cable executable
-exe='/g/data/rp23/lw5085/CABLE-POP_TRENDY/bin/cable'
+exe='/home/599/jk8585/CABLE_code/CABLE-POP_TRENDY/bin/cable'
+# CABLE-AUX directory (uses offline/gridinfo_CSIRO_1x1.nc and offline/modis_phenology_csiro.txt)
+aux='/g/data/rp23/experiments/2024-07-01_TRENDYv13/aux'
 # Global Meteorology
-MetPath='/g/data/rp23/lw5085/TRENDY_symlinks/'
-# MetVersion
-MetVersion=''
+MetPath='/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/met'
 # Global LUC
-TransitionFilePath='/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/luc/'
+TransitionFilePath='/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/luc'
 # Global Surface file 
-SurfaceFile='/g/data/rp23/data/no_provenance//gridinfo/gridinfo_CSIRO_1x1.nc'
+SurfaceFile='/g/data/rp23/experiments/2024-07-01_TRENDYv13/aux/gridinfo_CSIRO_1x1.nc'
 # Output directory of the run
-runpath='/g/data/rp23/lw5085/TRENDY/S0/run4'
+runpath='/g/data/rp23/experiments/2024-07-01_TRENDYv13/S0/run100'
 # Land Mask used for this run
-LandMaskFile='/g/data/rp23/lw5085/TRENDY/S0/run4/landmask/landmask4.nc'
+LandMaskFile='/g/data/rp23/experiments/2024-07-01_TRENDYv13/S0/run100/landmask/landmask100.nc'
 
 
 ## ----------------------------------------------------------------
@@ -98,10 +97,10 @@ LandMaskFile='/g/data/rp23/lw5085/TRENDY/S0/run4/landmask/landmask4.nc'
 doclimate=1     # 1/0: Do/Do not create climate restart file
 dofromzero=1    # 1/0  Do/Do not first spinup phase from zero biomass stocks
 doequi1=1       # 1/0: Do/Do not bring biomass stocks into quasi-equilibrium with unrestricted P and N pools
-    nequi1=3        #      number of times to repeat steps in doequi1  4
+    nequi1=3        # 3     number of times to repeat steps in doequi1  4
 doequi2=1       # 1/0: Do/Do not bring biomass stocks into quasi-equilibrium with restricted P and N pools
-    nequi2=15       #      number of times to repeat steps in doequi2  14
-    nequi2a=5       #      number of times to repeat analytic spinup in this step 5
+    nequi2=15       # 15     number of times to repeat steps in doequi2  14
+    nequi2a=5       #  5    number of times to repeat analytic spinup in this step 5
 if [[ "${experiment}" == "S3" ]] ; then
     doiniluc=1      # 1/0: Do/Do not spinup with dynamic land use (initialise land use)
 else
@@ -130,19 +129,19 @@ doc13o2=0           # 1/0: Do/Do not calculate 13C
 c13o2_simple_disc=0 # 1/0: simple or full 13C leaf discrimination
 # Parameter files
 namelistpath="${rundir}/namelists"
-filename_veg='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/def_veg_params.txt'
-filename_soil='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/def_soil_params.txt'
-casafile_cnpbiome='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/v12/pftlookup.csv'
+filename_veg='/home/599/jk8585/CABLE_run/TRENDY_v13/params/def_veg_params.txt'
+filename_soil='/home/599/jk8585/CABLE_run/TRENDY_v13/params/def_soil_params.txt'
+casafile_cnpbiome='/home/599/jk8585/CABLE_run/TRENDY_v13/params/pftlookup.csv'
 # Climate restart file 
 # changes for TRENDY >= v11: ClimateFile always created!
 # ClimateFile="/g/data/x45/ipbes/cable_climate/ipsl_climate_rst_glob_1deg.nc"
 #ClimateFile="$(dirname ${runpath})/climate_restart/cru_climate_rst.nc"
 ClimateFile="${runpath}/cru_climate_rst.nc"
 # gm lookup tables
-gm_lut_bernacchi_2002='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
-gm_lut_walker_2013='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc'
+gm_lut_bernacchi_2002="${rundir}/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc"
+gm_lut_walker_2013="${rundir}/params/gm_LUT_351x3601x7_1pt8245_Walker2013.nc"
 # 13C
-filename_d13c_atm='/g/data/rp23/lw5085/CABLE-POP_TRENDY/params/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc'
+filename_d13c_atm="${rundir}/params/graven_et_al_gmd_2017-table_s1-delta_13c-1700-2025.txt"
 
 
 # --------------------------------------------------------------------
@@ -161,7 +160,7 @@ pdir=$(dirname ${prog})
 tmp=${TMPDIR:-"/tmp"}
 
 # Helper functions, most functions are in run_cable-pop_lib.sh
-source ${isdir}/run_cable-pop_lib.sh
+source ${isdir}/aux/run_cable-pop_lib.sh
 
 # usage of script
 function usage()
@@ -248,6 +247,7 @@ printf "    Directories\n"
 printf "        rundir=${rundir}\n"
 printf "        runpath=${runpath}\n"
 printf "        exe=${exe}\n"
+printf "        aux=${aux}\n"
 printf "        LandMaskFile=${LandMaskFile}\n"
 printf "        SurfaceFile=${SurfaceFile}\n"
 printf "        namelistpath=${namelistpath}\n"
@@ -255,7 +255,6 @@ printf "        filename_veg=${filename_veg}\n"
 printf "        filename_soil=${filename_soil}\n"
 printf "        casafile_cnpbiome=${casafile_cnpbiome}\n"
 printf "        MetPath=${MetPath}\n"
-printf "        MetVersion=${MetVersion}\n"
 printf "        ClimateFile=${ClimateFile}\n"
 printf "        TransitionFilePath=${TransitionFilePath}\n"
 printf "        gm_lut_bernacchi_2002=${gm_lut_bernacchi_2002}\n"
@@ -278,19 +277,21 @@ else
     fdiff_bool=.false.
 fi
 
+# CO2File      = "/g/data/rp23/data/no_provenance/met_forcing/crujra_1x1_1d/v2.4/co2/global_co2_ann_1700_2022.txt"
+
 cat > ${tmp}/sedtmp.${pid} << EOF
-    rainFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/pre_<startdate>_<enddate>.nc"
-    lwdnFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/dlwrf_<startdate>_<enddate>.nc"
-    swdnFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tswrf_<startdate>_<enddate>.nc"
-    presFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/pres_<startdate>_<enddate>.nc"
-    qairFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/spfh_<startdate>_<enddate>.nc"
-    TmaxFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tmax_<startdate>_<enddate>.nc"
-    TminFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tmin_<startdate>_<enddate>.nc"
-    uwindFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/ugrd_<startdate>_<enddate>.nc"
-    vwindFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/vgrd_<startdate>_<enddate>.nc"
-    fDiffFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/fd_<startdate>_<enddate>.nc"
-    CO2File = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/co2/global_co2_ann_1700_2025.txt"
-    NDepFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/ndep/NDep_<startdate>_<enddate>.nc"
+    rainFile     = "${MetPath}/linked/pre_<startdate>_<enddate>.nc"
+    lwdnFile     = "${MetPath}/linked/dlwrf_<startdate>_<enddate>.nc"
+    swdnFile     = "${MetPath}/linked/tswrf_<startdate>_<enddate>.nc"
+    presFile     = "${MetPath}/linked/pres_<startdate>_<enddate>.nc"
+    qairFile     = "${MetPath}/linked/spfh_<startdate>_<enddate>.nc"
+    TmaxFile     = "${MetPath}/linked/tmax_<startdate>_<enddate>.nc"
+    TminFile     = "${MetPath}/linked/tmin_<startdate>_<enddate>.nc"
+    uwindFile    = "${MetPath}/linked/ugrd_<startdate>_<enddate>.nc"
+    vwindFile    = "${MetPath}/linked/vgrd_<startdate>_<enddate>.nc"
+    fDiffFile    = "${MetPath}/linked/fd_<startdate>_<enddate>.nc"
+    CO2File      = "/g/data/rp23/experiments/2024-07-01_TRENDYv13/input/co2/global_co2_ann_1700_2023.txt"
+    NDepFile     = "$(dirname ${MetPath})/ndep/NDep_<startdate>_<enddate>.nc"
     LandMaskFile = "${LandMaskFile}"
     rainRecycle = T
     lwdnRecycle = T
@@ -304,6 +305,7 @@ cat > ${tmp}/sedtmp.${pid} << EOF
     fDiffRecycle = T
     CO2Method = "1700"
     NDepMethod = "1850"
+    ReadDiffFrac = ${fdiff_bool}
     DThrs        = 3.0                ! **CABLE** timestep hours (not the met timestep)
 EOF
 applysed ${tmp}/sedtmp.${pid} ${ndir}/cru.nml ${rdir}/cru_${experiment}.nml
@@ -339,8 +341,8 @@ cat > ${tmp}/sedtmp.${pid} << EOF
     filename%restart_out               = "restart/${mettype}_cable_rst.nc"
     casafile%cnpbiome                  = "${casafile_cnpbiome}"
     casafile%out                       = "outputs/${mettype}_out_casa.nc"
-    casafile%cnpipool                  = "restart/${mettype}_casa"
-    casafile%cnpepool                  = "restart/${mettype}_casa"
+    casafile%cnpipool                  = "restart/${mettype}_casa_rst.nc"
+    casafile%cnpepool                  = "restart/${mettype}_casa_rst.nc"
     cable_user%CASA_OUT_FREQ           = "monthly"
     cable_user%POP_restart_in          = "restart/pop_${mettype}_ini.nc"
     cable_user%POP_restart_out         = "restart/pop_${mettype}_ini.nc"
@@ -471,7 +473,6 @@ EOF
     cd ${pdir}
 fi
 
-echo "Finish stage 1"
 
 # --------------------------------------------------------------------
 # 2. First spinup phase from zero biomass
@@ -517,7 +518,7 @@ EOF
     irm logs/log_cable.txt logs/log_out_cable.txt
     # valgrind --tool=massif --xtree-memory=full --pages-as-heap=yes ./${iexe} > logs/log_out_cable.txt
     ./${iexe} > logs/log_out_cable.txt
-    saveid ${rid} ${mettype} ${doc13o2}
+    saveid ${rid} ${mettype} ${doc13o2} # save output
     cd ${pdir}
 fi
 
@@ -533,12 +534,12 @@ if [[ ${doequi1} -eq 1 ]] ; then
         rid="spinup_limit_labile_${iequi1}"
         # rid="spinup_limit_labile${iequi}"
 
-	# Met forcing
+	    # Met forcing
         cp ${rdir}/cru_${experiment}.nml ${rdir}/cru.nml
 
         # LUC
         cp ${rdir}/luc_${experiment}.nml ${rdir}/luc.nml
-
+        
         # Cable
         cat > ${tmp}/sedtmp.${pid} << EOF
             cable_user%CLIMATE_fromZero    = .false.
@@ -562,7 +563,7 @@ EOF
         cd ${rdir}
         irm logs/log_cable.txt logs/log_out_cable.txt
         ./${iexe} > logs/log_out_cable.txt
-	saveid ${rid} ${mettype} ${doc13o2}
+	    saveid ${rid} ${mettype} ${doc13o2}
         cd ${pdir}
 	
         #
@@ -600,7 +601,7 @@ EOF
         cd ${rdir}
         irm logs/log_cable.txt logs/log_out_cable.txt
         ./${iexe} > logs/log_out_cable.txt
-	saveid ${rid} ${mettype} ${doc13o2}
+	    saveid ${rid} ${mettype} ${doc13o2}
         cd ${pdir}
     done
 fi
@@ -617,13 +618,13 @@ if [[ ${doequi2} -eq 1 ]] ; then
         # rid="spinup_nutrient_limited"
         rid="spinup_nutrient_limited_${iequi2}"
 
-	# Met forcing
+	    # Met forcing
         cp ${rdir}/cru_${experiment}.nml ${rdir}/cru.nml
 
-	# LUC
-	cp ${rdir}/luc_${experiment}.nml ${rdir}/luc.nml
+	    # LUC
+	    cp ${rdir}/luc_${experiment}.nml ${rdir}/luc.nml
 
-	# Cable
+	    # Cable
         cat > ${tmp}/sedtmp.${pid} << EOF
             cable_user%CLIMATE_fromZero    = .false.
             cable_user%YearStart           = 1841
@@ -647,10 +648,9 @@ EOF
         cd ${rdir}
         irm logs/log_cable.txt logs/log_out_cable.txt
         ./${iexe} > logs/log_out_cable.txt
-	saveid ${rid} ${mettype} ${doc13o2}
+	    saveid ${rid} ${mettype} ${doc13o2}
         cd ${pdir}
-
-	#
+	
         # 4b. analytic quasi-equilibrium of biomass pools
         if [[ ${iequi2} -le ${nequi2a} ]] ; then        
             echo "   4b. Analytic solution of biomass pools"
@@ -686,7 +686,7 @@ EOF
             cd ${rdir}
             irm logs/log_cable.txt logs/log_out_cable.txt
             ./${iexe} > logs/log_out_cable.txt
-	    saveid ${rid} ${mettype} ${doc13o2}
+	        saveid ${rid} ${mettype} ${doc13o2}
             cd ${pdir}
         fi
     done
@@ -751,8 +751,8 @@ if [[ ${doinidyn} -eq 1 ]] ; then
     echo "6. Transient run (full dynamic spinup)"
 
     # Met forcing
-    YearStart=1700
-    YearEnd=1900
+	YearStart=1700
+	YearEnd=1900
     rid=${YearStart}_${YearEnd}
 	         
     if [[ "${experiment}" == "S1" || "${experiment}" == "S2" || "${experiment}" == "S3" ]] ; then
@@ -761,11 +761,11 @@ if [[ ${doinidyn} -eq 1 ]] ; then
             NDepMethod = "Yearly"
 EOF
    else
-      cat > ${tmp}/sedtmp.${pid} << EOF
+        cat > ${tmp}/sedtmp.${pid} << EOF
             CO2Method = "1700"
             NDepMethod = "1850"
 EOF
-    fi
+    fi	
 #    if [[ "${experiment}" == "S0" ]] ; then
 #        cat > ${tmp}/sedtmp.${pid} << EOF
 #            Run = "S0_TRENDY"
@@ -793,7 +793,7 @@ EOF
     
     # Cable
     if [[ "${experiment}" == "S3" ]] ; then
-	POPLUC_RunType="restart"
+	    POPLUC_RunType="restart"
     else
         POPLUC_RunType="static"
     fi
@@ -833,7 +833,7 @@ if [[ ${dofinal} -eq 1 ]] ; then
 
     # Met forcing
     YearStart=1901
-    YearEnd=2022
+    YearEnd=2023
     rid=${YearStart}_${YearEnd}
     if [[ "${experiment}" == "S1" ]] ; then
         cat > ${tmp}/sedtmp.${pid} << EOF
@@ -856,7 +856,7 @@ EOF
              fDiffRecycle = F
 EOF
    else
-      cat > ${tmp}/sedtmp.${pid} << EOF
+        cat > ${tmp}/sedtmp.${pid} << EOF
             CO2Method = "1700"
             NDepMethod = "1850"
 EOF
@@ -893,7 +893,7 @@ EOF
     
     # Cable
     if [[ "${experiment}" == "S3" ]] ; then
-	POPLUC_RunType="restart"
+	    POPLUC_RunType="restart"
     else
         POPLUC_RunType="static"
     fi

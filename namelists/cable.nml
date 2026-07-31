@@ -111,6 +111,7 @@
     cable_user%Rubisco_parameters  = "Bernacchi_2002"
     cable_user%gm_LUT_file         = "/home/599/jk8585/CABLE_run/TRENDY_v10/params_v2/gm_LUT_351x3601x7_1pt8245_Bernacchi2002.nc"
     cable_user%coordinate_photosyn = .TRUE.
+    cable_user%calc_fdiff          = .FALSE.
     cable_user%g0_switch           = "maximum"
     cable_user%acclimate_photosyn  = .TRUE.
     cable_user%limit_labile        = .FALSE.

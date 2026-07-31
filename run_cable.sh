@@ -279,18 +279,18 @@ else
 fi
 
 cat > ${tmp}/sedtmp.${pid} << EOF
-    rainFile     = "${MetPath}/met/crujra.v4.10.5d.pre.<startdate>-<enddate>.365d.noc.daytot.1deg.nc"
-    lwdnFile     = "${MetPath}/met/crujra.v4.10.5d.dlwrf.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
-    swdnFile     = "${MetPath}/met/tswrf_v15_<startdate>-<enddate>.daymean.1deg.nc"
-    presFile     = "${MetPath}/met/crujra.v4.10.5d.pres.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
-    qairFile     = "${MetPath}/met/crujra.v4.10.5d.spfh.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
-    TmaxFile     = "${MetPath}/met/crujra.v4.10.5d.tmax.<startdate>-<enddate>.365d.noc.daymax.1deg.nc"
-    TminFile     = "${MetPath}/met/crujra.v4.10.5d.tmin.<startdate>-<enddate>.365d.noc.daymin.1deg.nc"
-    uwindFile    = "${MetPath}/met/crujra.v4.10.5d.ugrd.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
-    vwindFile    = "${MetPath}/met/crujra.v4.10.5d.vgrd.<startdate>-<enddate>.365d.noc.daymean.1deg.nc"
-    fDiffFile    = "${MetPath}/met/fd_v15_<startdate>-<enddate>.daymean.1deg.nc"
-    CO2File      = "${MetPath}/co2/global_co2_ann_1700_2025.txt"
-    NDepFile     = "${MetPath}/ndep/NDep_<startdate>_<enddate>.nc"
+    rainFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/pre_<startdate>_<enddate>.nc"
+    lwdnFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/dlwrf_<startdate>_<enddate>.nc"
+    swdnFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tswrf_<startdate>_<enddate>.nc"
+    presFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/pres_<startdate>_<enddate>.nc"
+    qairFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/spfh_<startdate>_<enddate>.nc"
+    TmaxFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tmax_<startdate>_<enddate>.nc"
+    TminFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/tmin_<startdate>_<enddate>.nc"
+    uwindFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/ugrd_<startdate>_<enddate>.nc"
+    vwindFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/vgrd_<startdate>_<enddate>.nc"
+    fDiffFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/met/linked/fd_<startdate>_<enddate>.nc"
+    CO2File = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/co2/global_co2_ann_1700_2025.txt"
+    NDepFile = "/g/data/rp23/experiments/2026-06-29_TRENDY-GCB2026/input/ndep/NDep_<startdate>_<enddate>.nc"
     LandMaskFile = "${LandMaskFile}"
     rainRecycle = T
     lwdnRecycle = T
